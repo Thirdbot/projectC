@@ -1,6 +1,7 @@
 #include <iostream>
+using namespace std;
 int main(){
-    //i dunno
-    std::cout << "Death" << std::endl;
+    cout << "Tic-Tac-Toe" << endl;
+    
     return 0;
 }
