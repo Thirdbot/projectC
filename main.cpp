@@ -13,7 +13,6 @@ class Bank
             //return true 
         };
     public:
-        Bank(){}
 
         void Called()
         {
@@ -32,6 +31,7 @@ class Bank
             {
                 cout <<selective_choice[i] << endl;
             }
+            selectChoice();
         }
         void selectChoice()
         {
@@ -50,25 +50,21 @@ class Bank
                     /* code */
                     break;
                 case 4:
-                //couldnt destroy class problem
-                    Exit();
+                {
                     break;
+                }
                 default:
-                    selectChoice();
+                    viewChoice();
                     break;
             }
+            cout << "check" <<endl;
+            Bank* bank_exit = new Bank;
+            bank_exit->~Bank();
         }
-        void Exit(){
-        };
-        /// couldnt destroy class
-        ~Bank(){
+        ~Bank()
+            {
                 cout << "Exit successfully,Thank you for services" <<endl;
-            }
-        
-        
-
-        
-
+            };
 
 };
 
@@ -105,11 +101,12 @@ class Customer:public Bank
             if (accountCheck(username,userpass))
             {
                 viewChoice();
-                selectChoice();
             }
         default:
-            accountValidation();
+        {
             break;
+        }
+        
         }
     }
     bool accountCreate()
