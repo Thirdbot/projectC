@@ -4,6 +4,7 @@ class Bank
 {
     private:
         virtual void accountValidation(){};
+        //dont care
         bool registerAccount(char*username,char*pass){
             //check
             // if no account
@@ -18,6 +19,7 @@ class Bank
         {
             accountValidation();
         }
+        //do not care
         //always get account
         bool getAccount(char*username,char*password){
             //return true if there account or created one
@@ -57,7 +59,6 @@ class Bank
                     viewChoice();
                     break;
             }
-            cout << "check" <<endl;
             Bank* bank_exit = new Bank;
             bank_exit->~Bank();
         }
