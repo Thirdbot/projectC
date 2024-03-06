@@ -1,10 +1,69 @@
 #include <iostream>
+#include <cstring>
+#include <memory>
 using namespace std;
-class Bank
+
+class Debt
+{
+    public:
+    void customer_Choice()
+    {
+        const char* selective_choice[] = {"1.Loan money", "2.Repay money", "3.Exit"};
+        for (int i = 0; i < sizeof(selective_choice) / sizeof(selective_choice[0]); i++)
+        {
+            cout << selective_choice[i] << endl;
+        }
+        selectChoice();
+    }
+
+    void selectChoice()
+    {
+        int number_selected;
+        cout << "Select choices by number: ";
+        cin >> number_selected;
+        switch (number_selected)
+        {
+        case 1:
+            loanMoney();
+            break;
+        case 2:
+            repayMoney();
+            break;
+        case 3:
+            delete this;
+            break;
+        default:
+            customer_Choice();
+            break;
+        }
+    }
+
+    void loanMoney()
+    {
+        double amount;
+        cout << "Enter amount to loan: ";
+        cin >> amount;
+        // Process loan request
+        cout << "Loan request processed. Thank you!" << endl;
+        customer_Choice();
+    }
+
+    void repayMoney()
+    {
+        double amount;
+        cout << "Enter amount to repay: ";
+        cin >> amount;
+        // Process repayment
+        cout << "Repayment processed. Thank you!" << endl;
+        customer_Choice();
+    }
+};
+class Bank:public Debt
 {
     
     private:
-        virtual void accountValidation(){};
+       virtual void accountValidation(){};
+        
         //dont care
         bool registerAccount(char*username,char*pass){
             //check
@@ -15,8 +74,11 @@ class Bank
             //return true 
         };
     public:
-        void Called()
+        void mainMenu()
         {
+            viewChoice();
+        }; 
+        void callAccount(){
             accountValidation();
         }
         //do not care
@@ -35,6 +97,12 @@ class Bank
             }
             selectChoice();
         }
+        void checkBalance()
+        {
+            //check balance
+            //view choice
+            viewChoice();
+        }
         void selectChoice()
         {
             int number_selected;
@@ -49,23 +117,23 @@ class Bank
                     /* code */
                     break;
                 case 3:
-                    /* code */
+                    checkBalance();
                     break;
                 case 4:
                 {
+                    customer_Choice();
                     break;
                 }
                 case 5:
                 {
+                    delete this;
                     break;
                 }
                 default:
                     viewChoice();
                     break;
             }
-
-            Bank* bank_exit = new Bank;
-            bank_exit->~Bank();
+        
         }
         ~Bank()
             {
@@ -76,15 +144,10 @@ class Bank
 
 class Customer:public Bank
 {
-    private:
-    //not using i guessed
-        struct account
-        {
-            char user_name[20];
-            char user_pass[20];
-        }acc;
     
     public:
+    
+
     virtual void accountValidation()
     {
         int rol;
@@ -139,64 +202,12 @@ class Customer:public Bank
 
 };
 
-class Debt : public Customer
-{
-    public:
-    void customer_Choice()
-    {
-        const char* selective_choice[] = {"1.Loan money", "2.Repay money", "3.Exit"};
-        for (int i = 0; i < sizeof(selective_choice) / sizeof(selective_choice[0]); i++)
-        {
-            cout << selective_choice[i] << endl;
-        }
-        selectChoice();
-    }
 
-    void selectChoice()
-    {
-        int number_selected;
-        cout << "Select choices by number: ";
-        cin >> number_selected;
-        switch (number_selected)
-        {
-        case 1:
-            loanMoney();
-            break;
-        case 2:
-            repayMoney();
-            break;
-        case 3:
-            delete this;
-            break;
-        default:
-            customer_Choice();
-            break;
-        }
-    }
-
-    void loanMoney()
-    {
-        double amount;
-        cout << "Enter amount to loan: ";
-        cin >> amount;
-        // Process loan request
-        cout << "Loan request processed. Thank you!" << endl;
-        viewChoice();
-    }
-
-    void repayMoney()
-    {
-        double amount;
-        cout << "Enter amount to repay: ";
-        cin >> amount;
-        // Process repayment
-        cout << "Repayment processed. Thank you!" << endl;
-        viewChoice();
-    }
-};
 
 int main(){
-    Bank* bank = new Customer;
-    bank->Called();
+    Bank *bank = new Customer;
+    bank->callAccount();
+    bank = new Bank;
+    bank->mainMenu();
     return 0;
 }
