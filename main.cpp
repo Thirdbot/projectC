@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cstring>
-#include <memory>
+#include <fstream>
 using namespace std;
 
 class Debt
@@ -144,7 +144,61 @@ class Bank:public Debt
 
 class Customer:public Bank
 {
-    
+
+    protected:
+    fstream file;
+
+    bool registerAccount(string username, string pass)
+    {
+        file.open("accounts.txt", ios::app);
+
+        file << username << " " << pass << " " << 0 << endl;
+
+        file.close();
+
+        cout << "Account registered successfully!" << endl;
+        return true;
+    }
+
+    bool accountExists(string username)
+    {
+        file.open("accounts.txt", ios::app);
+
+        string file_username;
+        string password;
+        int amount;
+        while (file >> file_username >> password >> amount)
+        {
+            if (file_username == username)
+            {
+                file.close();
+                return true;
+            }
+        }
+
+        file.close();
+        return false;
+    }
+
+    bool verifyPassword(string username, string password)
+    {
+        file.open("accounts.txt", ios::in);
+
+        string file_username;
+        string file_password;
+        int amount;
+        while (file >> file_username >> file_password >> amount)
+        {
+            if (file_username == username && file_password == password)
+            {
+                file.close();
+                return true;
+            }
+        }
+
+        file.close();
+        return false;
+    }
     public:
     
 
@@ -168,6 +222,8 @@ class Customer:public Bank
             cin >> username;
             cout << "Password:";
             cin >> userpass;
+
+
             if (accountCheck(username,userpass))
             {
                 viewChoice();
@@ -181,23 +237,34 @@ class Customer:public Bank
     }
     bool accountCreate()
     {
-        //check username not in file
-        //check password two times
-        int n = 0;
-        while (n<=1)
-        {
-            //check password
-        }
-        
+        string username;
+        string password;
+        cout << "Enter username: ";
+        cin >> username;
+        cout << "Enter password: ";
+        cin >> password;
 
-        //create account in file
-        return true;
+        if (accountExists(username))
+        {
+            cout << "Account with this username already exists. Please choose another username." << endl;
+            return false;
+        }
+
+        bool success = registerAccount(username, password);
+        return success;
     }
-    bool accountCheck(char* uname , char* upass)
+
+    bool accountCheck(string uname, string upass)
     {
-        //check account from file
-        //check password from file
-        return true;
+        if (verifyPassword(uname, upass))
+        {
+            return true;
+        }
+        else
+        {
+            cout << "Invalid username or password. Please try again." << endl;
+            return false;
+        }
     }
 
 };
