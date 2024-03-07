@@ -1,107 +1,26 @@
 #include <iostream>
-#include <cstring>
 #include <fstream>
+#include <cstring>
 using namespace std;
 
-class Debt
+
+//forwarding
+class Bank;
+
+class Storage
 {
+    protected:
+        fstream file;
     public:
-    void customer_Choice()
-    {
-        const char* selective_choice[] = {"1.Loan money", "2.Repay money", "3.Exit"};
-        for (int i = 0; i < sizeof(selective_choice) / sizeof(selective_choice[0]); i++)
-        {
-            cout << selective_choice[i] << endl;
-        }
-        selectChoice();
-    }
+    bool accountCheck(string,string);
+    bool verifyPassword(string,string);
+    bool registerAccount(string,string);
+    bool StoreFile();
+    bool accountExists(string);
 
-    void selectChoice()
-    {
-        int number_selected;
-        cout << "Select choices by number: ";
-        cin >> number_selected;
-        switch (number_selected)
-        {
-        case 1:
-            loanMoney();
-            break;
-        case 2:
-            repayMoney();
-            break;
-        case 3:
-            delete this;
-            break;
-        default:
-            customer_Choice();
-            break;
-        }
-    }
-
-    void loanMoney()
-    {
-        double amount;
-        cout << "Enter amount to loan: ";
-        cin >> amount;
-        // Process loan request
-        cout << "Loan request processed. Thank you!" << endl;
-        customer_Choice();
-    }
-
-    void repayMoney()
-    {
-        double amount;
-        cout << "Enter amount to repay: ";
-        cin >> amount;
-        // Process repayment
-        cout << "Repayment processed. Thank you!" << endl;
-        customer_Choice();
-    }
 };
 
-
-class Bank:public Debt
-{
-    
-    protected:
-    fstream file;
-
-    public:
-        Bank(){cout << "Welcome to Bank."<<endl;};
-        //registering services
-        bool registerAccount(string username, string pass)
-        {
-            file.open("accounts.txt", ios::app);
-
-            file << username << " " << pass << " " << 0 << endl;
-
-            file.close();
-
-            cout << "Account registered successfully!" << endl;
-            return true;
-        }
-        //check account valid
-        bool accountExists(string username)
-        {
-            file.open("accounts.txt", ios::in);
-
-            string file_username;
-            string password;
-            int amount;
-            while (file >> file_username >> password >> amount)
-            {
-                if (file_username == username)
-                {
-                    file.close();
-                    return true;
-                }
-            }
-
-            file.close();
-            return false;
-        }
-        //check authencation
-        bool verifyPassword(string username, string password)
+bool Storage::verifyPassword(string username, string password)
         {
             file.open("accounts.txt", ios::in);
 
@@ -120,9 +39,219 @@ class Bank:public Debt
             file.close();
             return false;
         }
-        //control flow of account authenication 
-        void accountValidation()
+
+bool Storage::accountCheck(string uname, string upass)
         {
+            if (verifyPassword(uname, upass))
+            {
+                return true;
+            }
+            else
+            {
+                cout << "Invalid username or password. Please try again." << endl;
+                return false;
+            }
+        }
+bool Storage::registerAccount(string username, string pass)
+        {
+            file.open("accounts.txt", ios::app);
+
+            file << username << " " << pass << " " << 0 << endl;
+
+            file.close();
+
+            cout << "Account registered successfully!" << endl;
+            return true;
+        }
+bool Storage::accountExists(string username)
+    {
+        file.open("accounts.txt", ios::in);
+
+        string file_username;
+        string password;
+        int amount;
+        while (file >> file_username >> password >> amount)
+        {
+            if (file_username == username)
+            {
+                file.close();
+                return true;
+            }
+        }
+
+        file.close();
+        return false;
+    }
+bool Storage::StoreFile()
+{
+    string username;
+    string password;
+    cout << "Enter username: ";
+    cin >> username;
+    cout << "Enter password: ";
+    cin >> password;
+
+    if (accountExists(username))
+    {
+        cout << "Account with this username already exists. Please choose another username." << endl;
+        return false;
+    }
+
+    bool success = registerAccount(username, password);
+    return success;
+}
+class Debt:virtual public Storage
+{
+    public:
+    void customerChoice();
+    void selectChoice();
+    ~Debt(){};
+    void loanMoney();
+    void repayMoney();
+};
+void Debt::customerChoice()
+    {
+        const char* selective_choice[] = {"1.Loan money", "2.Repay money", "3.Exit"};
+        for (int i = 0; i < sizeof(selective_choice) / sizeof(selective_choice[0]); i++)
+        {
+            cout << selective_choice[i] << endl;
+        }
+        selectChoice();
+    }
+void Debt::selectChoice()
+    {
+        int number_selected;
+        cout << "Select choices by number: ";
+        cin >> number_selected;
+        switch (number_selected)
+        {
+        case 1:
+            loanMoney();
+            break;
+        case 2:
+            repayMoney();
+            break;
+        case 3:
+            break;
+        default:
+            customerChoice();
+            break;
+        }
+    
+    }
+
+void Debt::loanMoney()
+    {
+        double amount;
+        cout << "Enter amount to loan: ";
+        cin >> amount;
+        // Process loan request
+        cout << "Loan request processed. Thank you!" << endl;
+        customerChoice();
+    }
+void Debt::repayMoney()
+    {
+        double amount;
+        cout << "Enter amount to repay: ";
+        cin >> amount;
+        // Process repayment
+        cout << "Repayment processed. Thank you!" << endl;
+        customerChoice();
+    }
+
+class Bank:virtual public Storage,public Debt
+{
+    public:
+    Bank(){cout << "Welcome to Bank."<<endl;}
+    bool accountCreate();
+    void accountValidation();
+    void mainMenu();
+    void checkBalance();
+    void viewChoice();
+    void selectChoice();
+     ~Bank()
+            {
+                cout << "Exit successfully,Thank you for services" <<endl;
+            };
+};
+void Bank::selectChoice()
+        {
+            int number_selected;
+            cout << "select choices by number: ";
+            cin >> number_selected;
+            switch (number_selected)
+            {
+                case 1:
+                    /* code */
+                    break;
+                case 2:
+                    /* code */
+                    break;
+                case 3:
+                    checkBalance();
+                    break;
+                case 4:
+                {
+                    customerChoice();
+                    break;
+                }
+                case 5:
+                {
+                    delete this;
+                    break;
+                }
+                default:
+                    viewChoice();
+                    break;
+            }
+        
+        }
+void Bank::viewChoice()
+        {
+            const char* selective_choice[] = {"1.Withdraw","2.Deposit","3.Balance","4.Loan","5.Exit"};
+            for (int i=0;i<size(selective_choice);i++)
+            {
+                cout <<selective_choice[i] << endl;
+            }
+            selectChoice();
+        }
+
+void Bank::checkBalance()
+        {
+            
+            //need personal balance checking
+            this->file.open("accounts.txt", ios::app);
+            int amount;
+            this->file >> amount;
+            cout << "Current Balance:" << amount<<endl;;
+            //view choice
+            viewChoice();
+        }
+
+void Bank::mainMenu()
+{
+    viewChoice();
+}
+bool Bank::accountCreate()
+        {
+            string username;
+            string password;
+            cout << "Enter username: ";
+            cin >> username;
+            cout << "Enter password: ";
+            cin >> password;
+
+            if (accountExists(username))
+            {
+                cout << "Account with this username already exists. Please choose another username." << endl;
+                return false;
+            }
+
+            bool success = registerAccount(username, password);
+            return success;
+        }
+void Bank::accountValidation()
+    {
             int rol;
             cout << "register or login" << endl;
             cout << "type 1 for register.\ntype 2 for login." << endl;
@@ -154,108 +283,8 @@ class Bank:public Debt
             
             }
         }
-        //check username
-        bool accountCreate()
-        {
-            string username;
-            string password;
-            cout << "Enter username: ";
-            cin >> username;
-            cout << "Enter password: ";
-            cin >> password;
-
-            if (accountExists(username))
-            {
-                cout << "Account with this username already exists. Please choose another username." << endl;
-                return false;
-            }
-
-            bool success = registerAccount(username, password);
-            return success;
-        }
-        //control flow of username password
-        bool accountCheck(string uname, string upass)
-        {
-            if (verifyPassword(uname, upass))
-            {
-                return true;
-            }
-            else
-            {
-                cout << "Invalid username or password. Please try again." << endl;
-                return false;
-            }
-        }
-        
-        //do not care
-        bool getAccount(char*username,char*password){
-            //return true if there account or created one
-            return registerAccount(username,password);
-        }
-
-        void viewChoice()
-        {
-            const char* selective_choice[] = {"1.Withdraw","2.Deposit","3.Balance","4.Loan","5.Exit"};
-            for (int i=0;i<size(selective_choice);i++)
-            {
-                cout <<selective_choice[i] << endl;
-            }
-            selectChoice();
-        }
-        void checkBalance()
-        {
-
-            //need personal balance checking
-            file.open("accounts.txt", ios::app);
-            int amount;
-            file >> amount;
-            cout << "Current Balance:" << amount<<endl;;
-            //view choice
-            viewChoice();
-        }
-        void selectChoice()
-        {
-            int number_selected;
-            cout << "select choices by number: ";
-            cin >> number_selected;
-            switch (number_selected)
-            {
-                case 1:
-                    /* code */
-                    break;
-                case 2:
-                    /* code */
-                    break;
-                case 3:
-                    checkBalance();
-                    break;
-                case 4:
-                {
-                    customer_Choice();
-                    break;
-                }
-                case 5:
-                {
-                    delete this;
-                    break;
-                }
-                default:
-                    viewChoice();
-                    break;
-            }
-        
-        }
-
-        ~Bank()
-            {
-                cout << "Exit successfully,Thank you for services" <<endl;
-            };
-
-};
-
-
-
-int main(){
+int main()
+{
     Bank bank;
     bank.accountValidation();
     return 0;
