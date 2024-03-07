@@ -9,6 +9,13 @@ class Bank;
 
 class Storage
 {
+    private:
+    struct acc_info
+    {
+        string username;
+        string password;
+    }acc;
+    
     protected:
         fstream file;
     public:
@@ -17,9 +24,18 @@ class Storage
     bool registerAccount(string,string);
     bool StoreFile();
     bool accountExists(string);
-
+    string getName();
+    string getPass();
 };
 
+string Storage::getName()
+{
+    return acc.username;
+};
+string Storage::getPass()
+{
+    return acc.password;
+};
 bool Storage::verifyPassword(string username, string password)
         {
             file.open("accounts.txt", ios::in);
@@ -31,6 +47,8 @@ bool Storage::verifyPassword(string username, string password)
             {
                 if (file_username == username && file_password == password)
                 {
+                    acc.username = file_username;
+                    acc.password = file_password;
                     file.close();
                     return true;
                 }
@@ -61,6 +79,7 @@ bool Storage::registerAccount(string username, string pass)
             file.close();
 
             cout << "Account registered successfully!" << endl;
+
             return true;
         }
 bool Storage::accountExists(string username)
@@ -117,6 +136,7 @@ void Debt::customerChoice()
             cout << selective_choice[i] << endl;
         }
         selectChoice();
+
     }
 void Debt::selectChoice()
     {
@@ -162,10 +182,12 @@ void Debt::repayMoney()
 class Bank:virtual public Storage,public Debt
 {
     public:
+
     Bank(){cout << "Welcome to Bank."<<endl;}
     bool accountCreate();
     void accountValidation();
-    void mainMenu();
+    void deposit();
+    void withdraw();
     void checkBalance();
     void viewChoice();
     void selectChoice();
@@ -182,10 +204,12 @@ void Bank::selectChoice()
             switch (number_selected)
             {
                 case 1:
-                    /* code */
+                    withdraw();
+                    viewChoice();
                     break;
                 case 2:
-                    /* code */
+                    deposit();
+                    viewChoice();
                     break;
                 case 3:
                     checkBalance();
@@ -209,6 +233,9 @@ void Bank::selectChoice()
 void Bank::viewChoice()
         {
             const char* selective_choice[] = {"1.Withdraw","2.Deposit","3.Balance","4.Loan","5.Exit"};
+            cout<<"=================="<<endl;
+            cout <<"Username: "<< getName() << endl;
+            cout<<"=================="<<endl;
             for (int i=0;i<size(selective_choice);i++)
             {
                 cout <<selective_choice[i] << endl;
@@ -218,20 +245,16 @@ void Bank::viewChoice()
 
 void Bank::checkBalance()
         {
-            
             //need personal balance checking
-            this->file.open("accounts.txt", ios::app);
+            file.open("accounts.txt", ios::in);
             int amount;
-            this->file >> amount;
+            file >> amount;
             cout << "Current Balance:" << amount<<endl;;
             //view choice
+            file.close();
             viewChoice();
         }
 
-void Bank::mainMenu()
-{
-    viewChoice();
-}
 bool Bank::accountCreate()
         {
             string username;
@@ -283,6 +306,48 @@ void Bank::accountValidation()
             
             }
         }
+void Bank::deposit() {
+        double amount;
+        cout << "Enter Amount to deposit: ";
+        cin >> amount;
+        file.open("accounts.txt", ios::in);
+        string username, password;
+        int balance;
+        file >> username >> password >> balance;
+        file.close();
+
+        balance += amount;
+
+        file.open("accounts.txt", ios::out);
+        file << username << " " << password << " " << balance << endl;
+        file.close();
+
+    cout << "Deposit successful. New balance: " << balance << endl;
+    }
+
+void Bank::withdraw() {
+    double amount;
+    cout << "Enter Amount to withdraw: ";
+    cin >> amount;
+    file.open("accounts.txt", ios::in);
+    string username, password;
+    int balance;
+    file >> username >> password >> balance;
+    file.close();
+
+    if (amount > balance) {
+        cout << "Insufficient funds!" << endl;
+    } else {
+        balance -= amount;
+
+        file.open("accounts.txt", ios::out);
+        file << username << " " << password << " " << balance << endl;
+        file.close();
+
+        cout << "Withdrawal successful. New balance: " << balance << endl;
+    }
+}
+
 int main()
 {
     Bank bank;
