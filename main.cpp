@@ -187,11 +187,6 @@ class Bank:public Debt
             }
         }
         
-        void mainMenu()
-        {
-            viewChoice();
-        }; 
-        
         //do not care
         bool getAccount(char*username,char*password){
             //return true if there account or created one
@@ -250,6 +245,7 @@ class Bank:public Debt
             }
         
         }
+
         ~Bank()
             {
                 cout << "Exit successfully,Thank you for services" <<endl;
