@@ -83,7 +83,7 @@ class Bank:public Debt
         //check account valid
         bool accountExists(string username)
         {
-            file.open("accounts.txt", ios::app);
+            file.open("accounts.txt", ios::in);
 
             string file_username;
             string password;
@@ -250,11 +250,6 @@ class Bank:public Debt
             {
                 cout << "Exit successfully,Thank you for services" <<endl;
             };
-
-};
-
-class Customer:public Bank
-{
 
 };
 
