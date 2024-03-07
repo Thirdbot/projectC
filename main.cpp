@@ -58,31 +58,141 @@ class Debt
         customer_Choice();
     }
 };
+
+
 class Bank:public Debt
 {
     
-    private:
-       virtual void accountValidation(){};
-        
-        //dont care
-        bool registerAccount(char*username,char*pass){
-            //check
-            // if no account
-            //write files by Bank class
-            //step 1
-            //if account
-            //return true 
-        };
+    protected:
+    fstream file;
+
     public:
+        Bank(){cout << "Welcome to Bank."<<endl;};
+        //registering services
+        bool registerAccount(string username, string pass)
+        {
+            file.open("accounts.txt", ios::app);
+
+            file << username << " " << pass << " " << 0 << endl;
+
+            file.close();
+
+            cout << "Account registered successfully!" << endl;
+            return true;
+        }
+        //check account valid
+        bool accountExists(string username)
+        {
+            file.open("accounts.txt", ios::app);
+
+            string file_username;
+            string password;
+            int amount;
+            while (file >> file_username >> password >> amount)
+            {
+                if (file_username == username)
+                {
+                    file.close();
+                    return true;
+                }
+            }
+
+            file.close();
+            return false;
+        }
+        //check authencation
+        bool verifyPassword(string username, string password)
+        {
+            file.open("accounts.txt", ios::in);
+
+            string file_username;
+            string file_password;
+            int amount;
+            while (file >> file_username >> file_password >> amount)
+            {
+                if (file_username == username && file_password == password)
+                {
+                    file.close();
+                    return true;
+                }
+            }
+
+            file.close();
+            return false;
+        }
+        //control flow of account authenication 
+        void accountValidation()
+        {
+            int rol;
+            cout << "register or login" << endl;
+            cout << "type 1 for register.\ntype 2 for login." << endl;
+            cout << "Type:";
+            cin >> rol;
+            switch (rol)
+            {
+            case 1:
+                accountCreate();
+                accountValidation();
+                break;
+            case 2:
+                char username[20];
+                char userpass[20];
+                cout << "Username: ";
+                cin >> username;
+                cout << "Password:";
+                cin >> userpass;
+
+
+                if (accountCheck(username,userpass))
+                {
+                    viewChoice();
+                }
+            default:
+            {
+                break;
+            }
+            
+            }
+        }
+        //check username
+        bool accountCreate()
+        {
+            string username;
+            string password;
+            cout << "Enter username: ";
+            cin >> username;
+            cout << "Enter password: ";
+            cin >> password;
+
+            if (accountExists(username))
+            {
+                cout << "Account with this username already exists. Please choose another username." << endl;
+                return false;
+            }
+
+            bool success = registerAccount(username, password);
+            return success;
+        }
+        //control flow of username password
+        bool accountCheck(string uname, string upass)
+        {
+            if (verifyPassword(uname, upass))
+            {
+                return true;
+            }
+            else
+            {
+                cout << "Invalid username or password. Please try again." << endl;
+                return false;
+            }
+        }
+        
         void mainMenu()
         {
             viewChoice();
         }; 
-        void callAccount(){
-            accountValidation();
-        }
+        
         //do not care
-        //always get account
         bool getAccount(char*username,char*password){
             //return true if there account or created one
             return registerAccount(username,password);
@@ -99,7 +209,12 @@ class Bank:public Debt
         }
         void checkBalance()
         {
-            //check balance
+
+            //need personal balance checking
+            file.open("accounts.txt", ios::app);
+            int amount;
+            file >> amount;
+            cout << "Current Balance:" << amount<<endl;;
             //view choice
             viewChoice();
         }
@@ -145,136 +260,12 @@ class Bank:public Debt
 class Customer:public Bank
 {
 
-    protected:
-    fstream file;
-
-    bool registerAccount(string username, string pass)
-    {
-        file.open("accounts.txt", ios::app);
-
-        file << username << " " << pass << " " << 0 << endl;
-
-        file.close();
-
-        cout << "Account registered successfully!" << endl;
-        return true;
-    }
-
-    bool accountExists(string username)
-    {
-        file.open("accounts.txt", ios::app);
-
-        string file_username;
-        string password;
-        int amount;
-        while (file >> file_username >> password >> amount)
-        {
-            if (file_username == username)
-            {
-                file.close();
-                return true;
-            }
-        }
-
-        file.close();
-        return false;
-    }
-
-    bool verifyPassword(string username, string password)
-    {
-        file.open("accounts.txt", ios::in);
-
-        string file_username;
-        string file_password;
-        int amount;
-        while (file >> file_username >> file_password >> amount)
-        {
-            if (file_username == username && file_password == password)
-            {
-                file.close();
-                return true;
-            }
-        }
-
-        file.close();
-        return false;
-    }
-    public:
-    
-
-    virtual void accountValidation()
-    {
-        int rol;
-        cout << "register or login" << endl;
-        cout << "type 1 for register.\ntype 2 for login." << endl;
-        cout << "Type:";
-        cin >> rol;
-        switch (rol)
-        {
-        case 1:
-            accountCreate();
-            accountValidation();
-            break;
-        case 2:
-            char username[20];
-            char userpass[20];
-            cout << "Username: ";
-            cin >> username;
-            cout << "Password:";
-            cin >> userpass;
-
-
-            if (accountCheck(username,userpass))
-            {
-                viewChoice();
-            }
-        default:
-        {
-            break;
-        }
-        
-        }
-    }
-    bool accountCreate()
-    {
-        string username;
-        string password;
-        cout << "Enter username: ";
-        cin >> username;
-        cout << "Enter password: ";
-        cin >> password;
-
-        if (accountExists(username))
-        {
-            cout << "Account with this username already exists. Please choose another username." << endl;
-            return false;
-        }
-
-        bool success = registerAccount(username, password);
-        return success;
-    }
-
-    bool accountCheck(string uname, string upass)
-    {
-        if (verifyPassword(uname, upass))
-        {
-            return true;
-        }
-        else
-        {
-            cout << "Invalid username or password. Please try again." << endl;
-            return false;
-        }
-    }
-
 };
 
 
 
 int main(){
-    Bank *bank = new Customer;
-    bank->callAccount();
-    bank = new Bank;
-    bank->mainMenu();
+    Bank bank;
+    bank.accountValidation();
     return 0;
 }
