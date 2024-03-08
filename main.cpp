@@ -415,27 +415,26 @@ void Bank::deposit()
     double amount;
     cout << "Enter Amount to deposit: ";
     cin >> amount;
-
+    if (amount < 0)
+    {
+    deposit();
+    }
+    else
+    {
     string username, password;
     int balance;
-    
     string fileName = "accounts.txt";
-    
     //read file temporary
     ifstream file(fileName);
     ofstream outfile("account_copy.txt");
-
     //iterator for reading balance at username
     while (file >> username >> password >> balance)
     {
-        
         if (username == this->acc.username)
         {
-            balance += amount;
-            cout << "Deposit successful. New balance: " << balance << endl;
-            
-        }
-
+        balance += amount;
+        cout << "Deposit successful. New balance: " << balance << endl; 
+        } 
         outfile << username << " " << password << " " << balance << endl;
     }
 
@@ -445,13 +444,21 @@ void Bank::deposit()
     rename("account_copy.txt",fileName.c_str());
     
     }
+}
+    
+    
 
 //write file withdraw
 void Bank::withdraw() {
     double amount;
     cout << "Enter Amount to withdraw: ";
     cin >> amount;
-
+    if (amount < 0)
+    {
+    withdraw();
+    }
+    else
+    {
     string fileName = "accounts.txt";
     string username, password;
     int balance;
@@ -463,29 +470,27 @@ void Bank::withdraw() {
     //iterator for reading balance at username
     while (file >> username >> password >> balance)
     {  
-        if (username == this->acc.username)
+    if (username == this->acc.username)
+    {
+        if (amount > balance) 
         {
-            if (amount > balance) 
-            {
-                cout << "Insufficient funds!" << endl;
-
-            } 
-            else 
-            {
-                balance -= amount;
-                cout << "Withdrawal successful. New balance: " << balance << endl;
-            
-            }
+        cout << "Insufficient funds!" << endl;
+        } 
+        else 
+        {
+        balance -= amount;
+        cout << "Withdrawal successful. New balance: " << balance << endl; 
         }
-
-        outfile << username << " " << password << " " << balance << endl;
     }
-
+    outfile << username << " " << password << " " << balance << endl;
+    }
     file.close();
     outfile.close();
     remove(fileName.c_str());
     rename("account_copy.txt",fileName.c_str());
   
+    }
+    
 }
 
 int main()
