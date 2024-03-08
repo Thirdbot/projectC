@@ -4,38 +4,51 @@
 using namespace std;
 
 
-//forwarding
-class Bank;
 
 class Storage
 {
+    //one use temporary holding username and password
     private:
     struct acc_info
     {
         string username;
         string password;
     }acc;
-    
+
+    //file
     protected:
         fstream file;
+
     public:
+    //loop register/login page
     bool accountCheck(string,string);
+    //return either true or false based on username password
     bool verifyPassword(string,string);
+    //registering an account process 
     bool registerAccount(string,string);
-    bool StoreFile();
+    //
+    //void RegisterValidation();
+
+    // check if username existed
     bool accountExists(string);
+
+    //public method for getting name and password for validation
     string getName();
     string getPass();
 };
 
+//return protected structure contains username
 string Storage::getName()
 {
     return acc.username;
 };
+//return protected structure contains pass
 string Storage::getPass()
 {
     return acc.password;
 };
+
+//return true if username and password is registered (for login parts)
 bool Storage::verifyPassword(string username, string password)
         {
             file.open("accounts.txt", ios::in);
@@ -58,6 +71,7 @@ bool Storage::verifyPassword(string username, string password)
             return false;
         }
 
+//a method that return true if verifyPassword also return true and return false if not (use for login loop)
 bool Storage::accountCheck(string uname, string upass)
         {
             if (verifyPassword(uname, upass))
@@ -70,6 +84,8 @@ bool Storage::accountCheck(string uname, string upass)
                 return false;
             }
         }
+
+//registering part and return true
 bool Storage::registerAccount(string username, string pass)
         {
             file.open("accounts.txt", ios::app);
@@ -82,6 +98,8 @@ bool Storage::registerAccount(string username, string pass)
 
             return true;
         }
+
+//return true/false based on account existed or not (use for register loop)
 bool Storage::accountExists(string username)
     {
         file.open("accounts.txt", ios::in);
@@ -101,7 +119,7 @@ bool Storage::accountExists(string username)
         file.close();
         return false;
     }
-bool Storage::StoreFile()
+/*void Storage::RegisterValidation()
 {
     string username;
     string password;
@@ -113,21 +131,25 @@ bool Storage::StoreFile()
     if (accountExists(username))
     {
         cout << "Account with this username already exists. Please choose another username." << endl;
-        return false;
     }
 
     bool success = registerAccount(username, password);
-    return success;
-}
+    
+}*/
 class Debt:virtual public Storage
+
 {
     public:
+    //choice display 
     void customerChoice();
-    void selectChoice();
-    ~Debt(){};
+    //choice selection
+    void debtChoice();
+    //method for loan money
     void loanMoney();
+    //method for repay money
     void repayMoney();
 };
+//display choice and called selection part
 void Debt::customerChoice()
     {
         const char* selective_choice[] = {"1.Loan money", "2.Repay money", "3.Exit"};
@@ -135,10 +157,11 @@ void Debt::customerChoice()
         {
             cout << selective_choice[i] << endl;
         }
-        selectChoice();
+        debtChoice();
 
     }
-void Debt::selectChoice()
+//selection part
+void Debt::debtChoice()
     {
         int number_selected;
         cout << "Select choices by number: ";
@@ -159,43 +182,62 @@ void Debt::selectChoice()
         }
     
     }
-
+//process loan
 void Debt::loanMoney()
     {
         double amount;
         cout << "Enter amount to loan: ";
         cin >> amount;
         // Process loan request
+
+
+
         cout << "Loan request processed. Thank you!" << endl;
         customerChoice();
     }
+
+//process repayment
 void Debt::repayMoney()
     {
         double amount;
         cout << "Enter amount to repay: ";
         cin >> amount;
         // Process repayment
+
+
+
         cout << "Repayment processed. Thank you!" << endl;
         customerChoice();
     }
 
+
 class Bank:virtual public Storage,public Debt
 {
     public:
-
+    //constructor for welcomeing
     Bank(){cout << "Welcome to Bank."<<endl;}
-    bool accountCreate();
+    //create account and use accountExist method
+    void accountCreate();
+    //choice selection for register or login (use for register login loop)
     void accountValidation();
+    //update file by amount of money
     void deposit();
+    //update file by amount of money
     void withdraw();
+    //view file output a  Balance
     void checkBalance();
+    //choice display
     void viewChoice();
+    //choice selection
     void selectChoice();
+    //destructor after method selectChoice done
      ~Bank()
             {
                 cout << "Exit successfully,Thank you for services" <<endl;
             };
 };
+
+//select choice
 void Bank::selectChoice()
         {
             int number_selected;
@@ -217,6 +259,7 @@ void Bank::selectChoice()
                 case 4:
                 {
                     customerChoice();
+                    viewChoice();
                     break;
                 }
                 case 5:
@@ -230,6 +273,7 @@ void Bank::selectChoice()
             }
         
         }
+//choice display and called selectChoice
 void Bank::viewChoice()
         {
             const char* selective_choice[] = {"1.Withdraw","2.Deposit","3.Balance","4.Loan","5.Exit"};
@@ -243,6 +287,7 @@ void Bank::viewChoice()
             selectChoice();
         }
 
+//display Balance
 void Bank::checkBalance()
         {
             //need personal balance checking
@@ -255,7 +300,8 @@ void Bank::checkBalance()
             viewChoice();
         }
 
-bool Bank::accountCreate()
+//create account if username is not existed
+void Bank::accountCreate()
         {
             string username;
             string password;
@@ -267,12 +313,14 @@ bool Bank::accountCreate()
             if (accountExists(username))
             {
                 cout << "Account with this username already exists. Please choose another username." << endl;
-                return false;
+                accountValidation();
+                
             }
 
-            bool success = registerAccount(username, password);
-            return success;
+            registerAccount(username, password);
+            
         }
+//method for select a register or login options
 void Bank::accountValidation()
     {
             int rol;
@@ -284,7 +332,6 @@ void Bank::accountValidation()
             {
             case 1:
                 accountCreate();
-                accountValidation();
                 break;
             case 2:
                 char username[20];
@@ -299,6 +346,8 @@ void Bank::accountValidation()
                 {
                     viewChoice();
                 }
+                accountValidation();
+
             default:
             {
                 break;
@@ -306,6 +355,8 @@ void Bank::accountValidation()
             
             }
         }
+
+//write file deposit
 void Bank::deposit() {
         double amount;
         cout << "Enter Amount to deposit: ";
@@ -324,7 +375,7 @@ void Bank::deposit() {
 
     cout << "Deposit successful. New balance: " << balance << endl;
     }
-
+//write file withdraw
 void Bank::withdraw() {
     double amount;
     cout << "Enter Amount to withdraw: ";
@@ -350,7 +401,9 @@ void Bank::withdraw() {
 
 int main()
 {
+    //make Bank object
     Bank bank;
+    //called registeration
     bank.accountValidation();
     return 0;
 }
