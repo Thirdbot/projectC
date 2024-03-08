@@ -8,11 +8,12 @@ using namespace std;
 class Storage
 {
     //one use temporary holding username and password
-    private:
+    protected:
     struct acc_info
     {
         string username;
         string password;
+        int balance;
     }acc;
 
     //file
@@ -32,11 +33,16 @@ class Storage
     // check if username existed
     bool accountExists(string);
 
-    //public method for getting name and password for validation
+    //public method for getting name and password and balance for validation
     string getName();
     string getPass();
+    int getAmount();
 };
-
+//return protected structure contains balance
+int Storage::getAmount()
+{
+    return acc.balance;
+};
 //return protected structure contains username
 string Storage::getName()
 {
@@ -99,7 +105,7 @@ bool Storage::registerAccount(string username, string pass)
             return true;
         }
 
-//return true/false based on account existed or not (use for register loop)
+//return true/false based on account existed or not (use for register loop) and use for returning
 bool Storage::accountExists(string username)
     {
         file.open("accounts.txt", ios::in);
@@ -115,7 +121,6 @@ bool Storage::accountExists(string username)
                 return true;
             }
         }
-
         file.close();
         return false;
     }
@@ -204,8 +209,6 @@ void Debt::repayMoney()
         cin >> amount;
         // Process repayment
 
-
-
         cout << "Repayment processed. Thank you!" << endl;
         customerChoice();
     }
@@ -292,11 +295,13 @@ void Bank::checkBalance()
         {
             //need personal balance checking
             file.open("accounts.txt", ios::in);
-            int amount;
-            file >> amount;
-            cout << "Current Balance:" << amount<<endl;;
-            //view choice
-            file.close();
+            if ((file.is_open()) && (file >> this->acc.username >> this->acc.password >> this->acc.balance) )
+            {
+                cout << "Current Balance:" << this->acc.balance<<endl;
+                file.close();
+            }
+            else{cout << "Error: Unable to read balance from file" << endl;}
+            
             viewChoice();
         }
 
