@@ -94,10 +94,9 @@ bool Storage::accountCheck(string uname, string upass)
 //registering part
 bool Storage::registerAccount(string username, string pass)
         {
-            file.open("accounts.txt", ios::app);
+            file.open("accounts.txt",ios::out|ios::app);
 
             file << username << " " << pass << " " << 0 << endl;
-
             file.close();
 
             cout << "Account registered successfully!" << endl;
@@ -223,6 +222,8 @@ class Bank:virtual public Storage,public Debt
     void accountCreate();
     //choice selection for register or login (use for register login loop)
     void accountValidation();
+    //account changing
+    void changeAccount();
     //autologin
     void autoLogin(string,string);
     //update file by amount of money
@@ -251,16 +252,25 @@ void Bank::selectChoice()
             switch (number_selected)
             {
                 case 1:
+                {
                     withdraw();
                     viewChoice();
                     break;
+                }
+                    
                 case 2:
+                {
                     deposit();
                     viewChoice();
                     break;
+                }
+                    
                 case 3:
+                {
                     checkBalance();
                     break;
+                }
+                    
                 case 4:
                 {
                     customerChoice();
@@ -268,6 +278,10 @@ void Bank::selectChoice()
                     break;
                 }
                 case 5:
+                {
+                    changeAccount();
+                }
+                case 6:
                 {
                     delete this;
                     break;
@@ -281,7 +295,7 @@ void Bank::selectChoice()
 //choice display and called selectChoice
 void Bank::viewChoice()
         {
-            const char* selective_choice[] = {"1.Withdraw","2.Deposit","3.Balance","4.Loan","5.Exit"};
+            const char* selective_choice[] = {"1.Withdraw","2.Deposit","3.Balance","4.Loan","5.ChangeAccount","6.Exit"};
             cout<<"=================="<<endl;
             cout <<"Username: "<< getName() << endl;
             cout<<"=================="<<endl;
@@ -295,15 +309,24 @@ void Bank::viewChoice()
 //display Balance
 void Bank::checkBalance()
         {
+            string fileName = "accounts.txt";
             //need personal balance checking
-            file.open("accounts.txt", ios::in);
-            this->acc.username = "THIRD";
-            if ((file.is_open()) && (file >> this->acc.username >> this->acc.password >> this->acc.balance) )
+            file.open(fileName, ios::in);
+            //iterator for reading balance at username
+            string file_username;
+            string file_password;
+            int amount;
+
+            while (file >> file_username >> file_password >> amount)
             {
-                cout << "Current Balance:" << this->acc.balance<<endl;
-                file.close();
+                if (file_username == this->acc.username && file_password == this->acc.password)
+                {
+                    this->acc.balance = amount;
+                    cout << "Current Balance:" << this->acc.balance<<endl;
+                    
+                }
             }
-            else{cout << "Error: Unable to read balance from file" << endl;}
+            file.close();
             
             viewChoice();
         }
@@ -329,6 +352,10 @@ void Bank::accountCreate()
                 autoLogin(username,password);
             }
         }
+void Bank::changeAccount()
+{
+    accountValidation();
+}
 //auto login
 void Bank::autoLogin(string uname,string upass)
 {
@@ -378,46 +405,83 @@ void Bank::accountValidation()
         }
 
 //write file deposit
-void Bank::deposit() {
-        double amount;
-        cout << "Enter Amount to deposit: ";
-        cin >> amount;
-        file.open("accounts.txt", ios::in);
-        string username, password;
-        int balance;
-        file >> username >> password >> balance;
-        file.close();
+void Bank::deposit() 
+{
 
-        balance += amount;
+    double amount;
+    cout << "Enter Amount to deposit: ";
+    cin >> amount;
 
-        file.open("accounts.txt", ios::out);
-        file << username << " " << password << " " << balance << endl;
-        file.close();
+    string username, password;
+    int balance;
+    
+    string fileName = "accounts.txt";
+    
+    //read file temporary
+    ifstream file(fileName);
+    ofstream outfile("account_copy.txt");
 
-    cout << "Deposit successful. New balance: " << balance << endl;
+    //iterator for reading balance at username
+    while (file >> username >> password >> balance)
+    {
+        
+        if (username == this->acc.username)
+        {
+            balance += amount;
+            cout << "Deposit successful. New balance: " << balance << endl;
+            
+        }
+
+        outfile << username << " " << password << " " << balance << endl;
     }
+
+    file.close();
+    outfile.close();
+    remove(fileName.c_str());
+    rename("account_copy.txt",fileName.c_str());
+    
+    }
+
 //write file withdraw
 void Bank::withdraw() {
     double amount;
     cout << "Enter Amount to withdraw: ";
     cin >> amount;
-    file.open("accounts.txt", ios::in);
+
+    string fileName = "accounts.txt";
     string username, password;
     int balance;
-    file >> username >> password >> balance;
-    file.close();
 
-    if (amount > balance) {
-        cout << "Insufficient funds!" << endl;
-    } else {
-        balance -= amount;
+    //read file temporary
+    ifstream file(fileName);
+    ofstream outfile("account_copy.txt");
 
-        file.open("accounts.txt", ios::out);
-        file << username << " " << password << " " << balance << endl;
-        file.close();
+    //iterator for reading balance at username
+    while (file >> username >> password >> balance)
+    {  
+        if (username == this->acc.username)
+        {
+            if (amount > balance) 
+            {
+                cout << "Insufficient funds!" << endl;
 
-        cout << "Withdrawal successful. New balance: " << balance << endl;
+            } 
+            else 
+            {
+                balance -= amount;
+                cout << "Withdrawal successful. New balance: " << balance << endl;
+            
+            }
+        }
+        
+        outfile << username << " " << password << " " << balance << endl;
     }
+
+    file.close();
+    outfile.close();
+    remove(fileName.c_str());
+    rename("account_copy.txt",fileName.c_str());
+  
 }
 
 int main()
