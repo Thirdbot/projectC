@@ -29,7 +29,7 @@ class Storage
     //transfer service using deposit and withdraw
     bool Transfer();
     //seperate bank file
-    void createBankFile(string,string,int);
+    void createBankFile(string,string,int,int);
     //loop register/login page
     bool accountCheck(string,string);
     //return either true or false based on username password
@@ -112,6 +112,7 @@ bool Storage::Bankwithdraw(string Sender,int amount)
             {
                 balance = balance - amount;
                 cout << "Transfer successful." << Sender << " new balance: " << balance << endl;
+                this->acc.balance = balance;
             }
             else
             {
@@ -139,33 +140,18 @@ bool Storage::Bankwithdraw(string Sender,int amount)
     }
 }
 
-void Storage::createBankFile(string uname1,string uname2,int amount)
+void Storage::createBankFile(string uname1,string uname2,int size,int total)
 {
-    string usender,ureciever, password;
-    int balance;
+    string usender,ureciever;
+    int balance,amount;
     string fileName = "BankFile.txt";
-    bankfile.open(fileName);
     cout << "Bankfile Created" << endl;
     //read file temporary
-    ifstream file(fileName);
-
-    ofstream outfile("BankFile_copy.txt");
-    outfile << "Sender" <<" "<<"Reciever"<< " " << "Password" << " " << "Balance" << endl;
-    //iterator for reading balance at username
-    while (file >> usender >> ureciever >> password >> balance)
-    {
-        balance -= amount;
-        if (usender != "Sender" && ureciever != "Reciever" && password != "Password")
-        {
-        cout << "transfer successful. New balance: " << balance << endl; 
-        } 
-        outfile << uname1 << " " << uname2 <<  password << " " << balance << endl;
-    }
-
+    file.open(fileName,ios::out|ios::app);
+    file << uname1 << " " << uname2 << " " <<  size << " " << total << endl;
     file.close();
-    outfile.close();
-    remove(fileName.c_str());
-    rename("BankFile_copy.txt",fileName.c_str());
+
+
 }
 bool Storage::Transfer()
 {
@@ -181,7 +167,7 @@ bool Storage::Transfer()
         cin >> amount;
         if(Bankdeposit(reciever,amount))
         {
-            createBankFile(acc.username,reciever,amount);
+            createBankFile(acc.username,reciever,amount,acc.balance);
             return true;
         }
         else
@@ -491,8 +477,7 @@ void Bank::checkBalance()
             {
                 if (file_username == this->acc.username && file_password == this->acc.password)
                 {
-                    this->acc.balance = amount;
-                    cout << "Current Balance:" << this->acc.balance<<endl;
+                    cout << "Current Balance:" << amount<<endl;
                     
                 }
             }
@@ -599,7 +584,8 @@ void Bank::deposit()
         if (username == this->acc.username)
         {
         balance += amount;
-        cout << "Deposit successful. New balance: " << balance << endl; 
+        cout << "Deposit successful. New balance: " << balance << endl;
+        this->acc.balance = balance;
         } 
         outfile << username << " " << password << " " << balance << endl;
     }
@@ -645,7 +631,8 @@ void Bank::withdraw() {
         else 
         {
         balance -= amount;
-        cout << "Withdrawal successful. New balance: " << balance << endl; 
+        cout << "Withdrawal successful. New balance: " << balance << endl;
+        this->acc.balance = balance;
         }
     }
     outfile << username << " " << password << " " << balance << endl;
