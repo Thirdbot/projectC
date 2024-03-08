@@ -161,6 +161,7 @@ void Debt::customerChoice()
         {
             cout << selective_choice[i] << endl;
         }
+        cout<<"=================="<<endl;
         debtChoice();
 
     }
@@ -170,6 +171,7 @@ void Debt::debtChoice()
         int number_selected;
         cout << "Select choices by number: ";
         cin >> number_selected;
+        cout<<"=================="<<endl;
         switch (number_selected)
         {
         case 1:
@@ -249,6 +251,7 @@ void Bank::selectChoice()
             int number_selected;
             cout << "select choices by number: ";
             cin >> number_selected;
+            cout<<"=================="<<endl;
             switch (number_selected)
             {
                 case 1:
@@ -303,6 +306,7 @@ void Bank::viewChoice()
             {
                 cout <<selective_choice[i] << endl;
             }
+            cout<<"=================="<<endl;
             selectChoice();
         }
 
@@ -473,7 +477,7 @@ void Bank::withdraw() {
             
             }
         }
-        
+
         outfile << username << " " << password << " " << balance << endl;
     }
 
