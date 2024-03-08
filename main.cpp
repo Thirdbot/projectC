@@ -91,7 +91,7 @@ bool Storage::accountCheck(string uname, string upass)
             }
         }
 
-//registering part and return true
+//registering part
 bool Storage::registerAccount(string username, string pass)
         {
             file.open("accounts.txt", ios::app);
@@ -101,7 +101,7 @@ bool Storage::registerAccount(string username, string pass)
             file.close();
 
             cout << "Account registered successfully!" << endl;
-
+            
             return true;
         }
 
@@ -223,6 +223,8 @@ class Bank:virtual public Storage,public Debt
     void accountCreate();
     //choice selection for register or login (use for register login loop)
     void accountValidation();
+    //autologin
+    void autoLogin(string,string);
     //update file by amount of money
     void deposit();
     //update file by amount of money
@@ -295,6 +297,7 @@ void Bank::checkBalance()
         {
             //need personal balance checking
             file.open("accounts.txt", ios::in);
+            this->acc.username = "THIRD";
             if ((file.is_open()) && (file >> this->acc.username >> this->acc.password >> this->acc.balance) )
             {
                 cout << "Current Balance:" << this->acc.balance<<endl;
@@ -321,10 +324,23 @@ void Bank::accountCreate()
                 accountValidation();
                 
             }
-
-            registerAccount(username, password);
-            
+            if(registerAccount(username,password))
+            {
+                autoLogin(username,password);
+            }
         }
+//auto login
+void Bank::autoLogin(string uname,string upass)
+{
+    if (accountCheck(uname,upass))
+    {
+        viewChoice();
+    }
+    else
+    {
+        accountValidation();
+    }
+}
 //method for select a register or login options
 void Bank::accountValidation()
     {
