@@ -18,9 +18,18 @@ class Storage
 
     //file
     protected:
+        fstream bankfile;
         fstream file;
 
     public:
+    //update file by amount of money
+    bool Bankdeposit(string,int);
+    //update file by amount of money
+    bool Bankwithdraw(string,int);
+    //transfer service using deposit and withdraw
+    bool Transfer();
+    //seperate bank file
+    void createBankFile(string,string,int);
     //loop register/login page
     bool accountCheck(string,string);
     //return either true or false based on username password
@@ -38,6 +47,154 @@ class Storage
     string getPass();
     int getAmount();
 };
+
+//giveaway
+bool Storage::Bankdeposit(string reciever,int amount)
+{
+    if (amount < 0)
+    {
+        return false;
+    }
+    else
+    {
+    string username, password;
+    int balance;
+    string fileName = "accounts.txt";
+
+    //iterator for reading balance at username
+    if(Bankwithdraw(this->acc.username,amount) == false){return false;}
+    ifstream depo(fileName);
+    ofstream outfile("account_copy.txt");
+
+    while (depo >> username >> password >> balance )
+        {
+            if (username == reciever)
+            {
+                balance = balance+amount;
+                
+            }
+            outfile << username << " " << password << " " << balance << endl;
+        }
+    cout << "Transfer successful. money transfered : " << amount << endl;
+    depo.close();
+    outfile.close();
+    remove(fileName.c_str());
+    string origFile = "accounts.txt";
+    remove(origFile.c_str());
+    rename("account_copy.txt","accounts.txt");
+    return true;
+    
+    }
+}
+
+bool Storage::Bankwithdraw(string Sender,int amount)
+{
+    //this->acc.username
+    if (amount < 0)
+    {
+        return false;
+    }
+    else
+    {
+    string username, password;
+    int balance;
+    string fileName = "accounts.txt";
+    //read file temporary
+    ifstream wit(fileName);
+    ofstream outfile("account_copy.txt");
+    bool failed = false;
+    //iterator for reading balance at username
+    while (wit >> username >> password >> balance)
+    {
+        if (username == Sender)
+        {
+            if(balance >= amount)
+            {
+                balance = balance - amount;
+                cout << "Transfer successful." << Sender << " new balance: " << balance << endl;
+            }
+            else
+            {
+                cout << "You may not have enough money to Transfer." << endl;
+                failed = true;
+            }
+
+        }
+
+        outfile << username << " " << password << " " << balance << endl;
+    }
+    wit.close();
+    outfile.close();
+    remove(fileName.c_str());
+
+    //string deponame = "depoacc.txt";
+    rename("account_copy.txt",fileName.c_str());
+
+    if(!failed)
+    {
+        return true;
+    }
+    else{return false;};
+    
+    }
+}
+
+void Storage::createBankFile(string uname1,string uname2,int amount)
+{
+    string usender,ureciever, password;
+    int balance;
+    string fileName = "BankFile.txt";
+    bankfile.open(fileName);
+    cout << "Bankfile Created" << endl;
+    //read file temporary
+    ifstream file(fileName);
+
+    ofstream outfile("BankFile_copy.txt");
+    outfile << "Sender" <<" "<<"Reciever"<< " " << "Password" << " " << "Balance" << endl;
+    //iterator for reading balance at username
+    while (file >> usender >> ureciever >> password >> balance)
+    {
+        balance -= amount;
+        if (usender != "Sender" && ureciever != "Reciever" && password != "Password")
+        {
+        cout << "transfer successful. New balance: " << balance << endl; 
+        } 
+        outfile << uname1 << " " << uname2 <<  password << " " << balance << endl;
+    }
+
+    file.close();
+    outfile.close();
+    remove(fileName.c_str());
+    rename("BankFile_copy.txt",fileName.c_str());
+}
+bool Storage::Transfer()
+{
+    string reciever;
+    int amount;
+    cout << "Transfer Money" << endl;
+    cout << "Enter reciever name: ";
+    cin >> reciever;
+    if (accountExists(reciever))
+    {
+        cout << "From:" << acc.username << " To " << reciever << endl;
+        cout << "Enter Amount of money: ";
+        cin >> amount;
+        if(Bankdeposit(reciever,amount))
+        {
+            createBankFile(acc.username,reciever,amount);
+            return true;
+        }
+        else
+        {
+            return false;
+        } 
+    }
+    else
+    {
+        return false;
+    }
+   
+}
 //return protected structure contains balance
 int Storage::getAmount()
 {
@@ -219,7 +376,10 @@ class Bank:virtual public Storage,public Debt
 {
     public:
     //constructor for welcomeing
-    Bank(){cout << "Welcome to Bank."<<endl;}
+    Bank()
+    {
+        cout << "Welcome to Bank."<<endl;
+    }
     //create account and use accountExist method
     void accountCreate();
     //choice selection for register or login (use for register login loop)
@@ -282,9 +442,15 @@ void Bank::selectChoice()
                 }
                 case 5:
                 {
-                    changeAccount();
+                    Transfer();
+                    viewChoice();
+    
                 }
                 case 6:
+                {
+                    changeAccount();
+                }
+                case 7:
                 {
                     delete this;
                     break;
@@ -298,7 +464,7 @@ void Bank::selectChoice()
 //choice display and called selectChoice
 void Bank::viewChoice()
         {
-            const char* selective_choice[] = {"1.Withdraw","2.Deposit","3.Balance","4.Loan","5.ChangeAccount","6.Exit"};
+            const char* selective_choice[] = {"1.Withdraw","2.Deposit","3.Balance","4.Loan","5.Transfer","6.ChangeAccount","7.Exit"};
             cout<<"=================="<<endl;
             cout <<"Username: "<< getName() << endl;
             cout<<"=================="<<endl;
