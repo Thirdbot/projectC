@@ -21,7 +21,7 @@ class Storage
     {
         string name = "Bank";
         string password = "1234";
-        int amount;
+        int amount = 20000000;
     }bdebt;
     struct bankessential
     {
@@ -363,7 +363,7 @@ class Debt:virtual public Storage
     
 
     public:
-    bool checkMoneyUser();
+    bool checkMoneyUser(int);
     bool checkMoneyBank();
     //choice display 
     void customerChoice();
@@ -374,7 +374,7 @@ class Debt:virtual public Storage
     //method for repay money
     void repayMoney();
 };
-bool Debt::checkMoneyUser()
+bool Debt::checkMoneyUser(int debt)
 {
         string fileName = "accounts.txt";
         //need personal balance checking
@@ -392,7 +392,7 @@ bool Debt::checkMoneyUser()
             }
 
         file.close();
-        if(acc.balance > 0)
+        if(acc.balance > 0 && acc.balance >=debt)
         {
             return true;
         }
@@ -545,10 +545,10 @@ void Debt::repayMoney() {
         istringstream iss(line);
         if (iss >> username >> debt) {
             if (username == acc.username && debt <= amount) {
-                outfile << username << " " << debt-amount << endl;
+                outfile << username << " " << (debt-amount <0?0:0) << endl;
                 cout << "Repayment of " << amount << " successful." << endl;
 
-                if(checkMoneyUser())
+                if(checkMoneyUser(amount))
                 {
                     Bankdeposit(bdebt.name,amount);
                     createBankFile(acc.username,bdebt.name,amount,acc.balance);
