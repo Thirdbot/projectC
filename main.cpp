@@ -528,7 +528,7 @@ void Debt::loanMoney() {
                     cout << "Couldnt let user loan." << endl;
                     found=false;
                 }
-                outfile << acc.username << " " << debt+debt*(this->bs.fee/100);
+                outfile << acc.username << " " << debt+(debt*(this->bs.fee/100));
             }
             
              else {
