@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <sstream>
+
 using namespace std;
 
 
@@ -15,6 +17,17 @@ class Storage
         string password;
         int balance;
     }acc;
+    struct bankDebt
+    {
+        string name = "Bank";
+        string password = "1234";
+        int amount;
+    }bdebt;
+    struct bankessential
+    {
+        int fee=0;
+    }bs;
+    
 
     //file
     protected:
@@ -36,7 +49,8 @@ class Storage
     bool verifyPassword(string,string);
     //registering an account process 
     bool registerAccount(string,string);
-    //
+    bool BankTransfer(string,int);
+    bool OwnerTransfer(string,int);
     //void RegisterValidation();
 
     // check if username existed
@@ -110,7 +124,7 @@ bool Storage::Bankwithdraw(string Sender,int amount)
         {
             if(balance >= amount)
             {
-                balance = balance - amount;
+                balance = balance - amount-bs.fee;
                 cout << "Transfer successful." << Sender << " new balance: " << balance << endl;
                 this->acc.balance = balance;
             }
@@ -168,6 +182,64 @@ bool Storage::Transfer()
         if(Bankdeposit(reciever,amount))
         {
             createBankFile(acc.username,reciever,amount,acc.balance);
+            return true;
+        }
+        else
+        {
+            return false;
+        } 
+    }
+    else
+    {
+        return false;
+    }
+   
+}
+bool Storage::OwnerTransfer(string reciever,int amount)
+{
+    if (amount < 0)
+    {
+        return false;
+    }
+    else
+    {
+    string username, password;
+    int balance;
+    string fileName = "accounts.txt";
+
+    //iterator for reading balance at username
+    if(Bankwithdraw(this->bdebt.name,amount) == false){return false;}
+    ifstream depo(fileName);
+    ofstream outfile("account_copy.txt");
+
+    while (depo >> username >> password >> balance )
+        {
+            if (username == reciever)
+            {
+                balance = balance+amount;
+                
+            }
+            outfile << username << " " << password << " " << balance << endl;
+        }
+    cout << "Transfer successful. money transfered : " << amount << endl;
+    depo.close();
+    outfile.close();
+    remove(fileName.c_str());
+    string origFile = "accounts.txt";
+    remove(origFile.c_str());
+    rename("account_copy.txt","accounts.txt");
+    return true;
+    
+    }
+}
+bool Storage::BankTransfer(string receivername,int amount)
+{
+    if (accountExists(receivername))
+    {
+        cout << "From:" << bdebt.name << " To " << receivername << endl;
+        if(OwnerTransfer(receivername,amount))
+        {
+            createBankFile(bdebt.name,receivername,amount,acc.balance);
             return true;
         }
         else
@@ -286,7 +358,12 @@ bool Storage::accountExists(string username)
 class Debt:virtual public Storage
 
 {
+    protected:
+    
+
     public:
+    bool checkMoneyUser();
+    bool checkMoneyBank();
     //choice display 
     void customerChoice();
     //choice selection
@@ -296,6 +373,65 @@ class Debt:virtual public Storage
     //method for repay money
     void repayMoney();
 };
+bool Debt::checkMoneyUser()
+{
+        string fileName = "accounts.txt";
+        //need personal balance checking
+        file.open(fileName, ios::in);
+        //iterator for reading balance at username
+        string file_username;
+        string file_password;
+        int amount;
+        while (file >> file_username >> file_password >> amount)
+        {
+            if (file_username == acc.username && file_password == acc.password)
+                {
+                    acc.balance = amount;
+                }
+            }
+
+        file.close();
+        if(acc.balance > 0)
+        {
+            return true;
+        }
+        else
+        {
+        return false;
+    }
+}
+bool Debt::checkMoneyBank()
+{
+        string fileName = "accounts.txt";
+        //need personal balance checking
+        file.open(fileName, ios::in);
+        //iterator for reading balance at username
+        string file_username;
+        string file_password;
+        int amount;
+        while (file >> file_username >> file_password >> amount)
+        {
+            if (file_username == bdebt.name && file_password == bdebt.password)
+                {
+                    bdebt.amount = amount;
+                }
+            }
+
+        file.close();
+        if(bdebt.amount > 0)
+        {
+            return true;
+        }
+        else
+        {
+        cout << "Bank run out of money" << endl;
+        cout << "Start include fees in transaction"<<endl;
+        bs.fee = 10;
+        cout << "Fees:"<<bs.fee<<endl;
+        return false;
+    }
+}
+
 //display choice and called selection part
 void Debt::customerChoice()
     {
@@ -331,31 +467,103 @@ void Debt::debtChoice()
         }
     
     }
-//process loan
-void Debt::loanMoney()
-    {
-        double amount;
-        cout << "Enter amount to loan: ";
-        cin >> amount;
-        // Process loan request
+void Debt::loanMoney() {
+    double amount;
+    cout << "Enter amount to loan: ";
+    cin >> amount;
 
+    string line; // Declare the line variable here
+    string filename = "Debt.txt";
+    ifstream infile(filename);
+    ofstream outfile("Debt_copy.txt");
+    bool found = false;
 
+    while (getline(infile, line)) {
+        string username;
+        double debt;
+        istringstream iss(line);
 
+        if (iss >> username >> debt) {
+            if (username == acc.username) {
+                debt += amount; // Add new loan amount to existing debt
+                outfile << username << " " << debt << endl;
+                cout << "Loan request processed. Thank you!" << endl;
+                bdebt.amount -= debt;
+                if(checkMoneyBank())
+                {
+                    BankTransfer(acc.username,debt);
+                }
+                else
+                {
+                    debtChoice();
+                }
+                    
+                found = true;
+            } else {
+                outfile << line << endl;
+            }
+        }
+    }
+    infile.close();
+
+    // If the user does not exist in the debt file, add a new entry
+    if (!found) {
+        outfile << acc.username << " " << amount << endl;
         cout << "Loan request processed. Thank you!" << endl;
-        customerChoice();
     }
 
-//process repayment
-void Debt::repayMoney()
-    {
-        double amount;
-        cout << "Enter amount to repay: ";
-        cin >> amount;
-        // Process repayment
+    outfile.close();
+    remove(filename.c_str());
+    rename("Debt_copy.txt", filename.c_str());
 
-        cout << "Repayment processed. Thank you!" << endl;
-        customerChoice();
+    customerChoice();
+}
+
+void Debt::repayMoney() {
+    double amount;
+    cout << "Enter amount to repay: ";
+    cin >> amount;
+    string line;
+    string filename = "Debt.txt";
+    ifstream infile(filename);
+    ofstream outfile("Debt_copy.txt");
+    bool found = false;
+
+    while (getline(infile, line)) {
+        string username;
+        double debt;
+        istringstream iss(line);
+        if (iss >> username >> debt) {
+            if (username == acc.username && debt >= amount) {
+                debt -= amount;
+                outfile << username << " " << debt << endl;
+                cout << "Repayment of " << amount << " successful." << endl;
+                if(checkMoneyUser())
+                {
+                    BankTransfer(bdebt.name,amount);
+                }
+                else
+                {
+                    cout << "You not have enough money to pay debt.";
+                    debtChoice();
+                }
+                found = true;
+            } else {
+                outfile << line << endl;
+            }
+        }
     }
+    infile.close();
+    outfile.close();
+    remove(filename.c_str());
+    rename("Debt_copy.txt", filename.c_str());
+
+    if (!found) {
+        cout << "Error: User does not have enough debt to repay or user not found." << endl;
+    }
+
+    customerChoice();
+}
 
 
 class Bank:virtual public Storage,public Debt
