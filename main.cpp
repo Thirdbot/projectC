@@ -7,6 +7,9 @@ using namespace std;
 
 
 
+/* The `Storage` class in C++ contains data structures for storing account information, bank debt, and
+essential bank details, along with methods for banking operations such as deposit, withdraw,
+transfer, and account management. */
 class Storage
 {
     //one use temporary holding username and password
@@ -63,6 +66,21 @@ class Storage
 };
 
 //giveaway
+/**
+ * The function `Bankdeposit` in C++ reads account information from a file, updates the balance for a
+ * specified receiver, and writes the changes back to the file after a successful transfer.
+ * 
+ * @param reciever The `reciever` parameter in the `Bankdeposit` function represents the username of
+ * the account to which the specified `amount` is being deposited.
+ * @param amount The `amount` parameter in the `Bankdeposit` function represents the amount of money
+ * that is being deposited into a bank account. The function checks if the amount is greater than or
+ * equal to zero before proceeding with the deposit transaction. If the amount is valid, it updates the
+ * balance of the account specified
+ * 
+ * @return The function `Storage::Bankdeposit` returns a boolean value - `true` if the deposit was
+ * successful, and `false` if the amount is less than 0 or if the withdrawal during the deposit process
+ * fails.
+ */
 bool Storage::Bankdeposit(string reciever,int amount)
 {
     if (amount < 0)
@@ -101,6 +119,19 @@ bool Storage::Bankdeposit(string reciever,int amount)
     }
 }
 
+/**
+ * The function `Bankwithdraw` in C++ reads account information from a file, processes a withdrawal
+ * transaction, and updates the account balance accordingly.
+ * 
+ * @param Sender The `Sender` parameter in the `Bankwithdraw` function represents the username of the
+ * account from which the withdrawal is being made.
+ * @param amount The `amount` parameter in the `Bankwithdraw` function represents the amount of money
+ * that the user wants to withdraw from their bank account.
+ * 
+ * @return The function `Bankwithdraw` returns a boolean value. If the withdrawal is successful, it
+ * returns `true`. If the withdrawal fails due to insufficient funds or other reasons, it returns
+ * `false`.
+ */
 bool Storage::Bankwithdraw(string Sender,int amount)
 {
     //this->acc.username
@@ -155,6 +186,22 @@ bool Storage::Bankwithdraw(string Sender,int amount)
     }
 }
 
+/**
+ * The function `createBankFile` creates a bank file with user information and writes it to a text
+ * file.
+ * 
+ * @param uname1 The `uname1` parameter in the `createBankFile` function is a string that represents
+ * the username of the sender in a banking transaction.
+ * @param uname2 The parameter `uname2` in the `createBankFile` function is a string variable that
+ * represents the username of the second user involved in the bank transaction.
+ * @param size The `size` parameter in the `createBankFile` function likely represents the size of the
+ * transaction or some other relevant data related to the bank file being created. It seems to be an
+ * integer value that is being passed to the function.
+ * @param total The `total` parameter in the `createBankFile` function likely represents the total
+ * amount of money involved in a bank transaction between two users. This could be the total balance in
+ * the transaction, the total amount being transferred, or some other total value related to the
+ * transaction.
+ */
 void Storage::createBankFile(string uname1,string uname2,int size,int total)
 {
     string usender,ureciever;
@@ -168,6 +215,13 @@ void Storage::createBankFile(string uname1,string uname2,int size,int total)
 
 
 }
+/**
+ * The Transfer function in C++ prompts the user to enter a receiver name and amount to transfer money,
+ * checks if the receiver account exists, and then performs the transfer if successful.
+ * 
+ * @return The `Transfer` function returns a boolean value. It returns `true` if the money transfer is
+ * successful and `false` if the transfer fails or if the receiver account does not exist.
+ */
 bool Storage::Transfer()
 {
     string reciever;
@@ -196,6 +250,19 @@ bool Storage::Transfer()
     }
    
 }
+/**
+ * The function `OwnerTransfer` transfers a specified amount of money to a receiver's account while
+ * updating the account balances in a file.
+ * 
+ * @param reciever The `reciever` parameter in the `OwnerTransfer` function represents the username of
+ * the account to which the transfer of `amount` is being made.
+ * @param amount The `amount` parameter in the `OwnerTransfer` function represents the amount of money
+ * that is being transferred to the `reciever` account.
+ * 
+ * @return The function `Storage::OwnerTransfer` returns a boolean value - `true` if the transfer is
+ * successful, and `false` if the transfer fails due to a negative amount or if the `Bankwithdraw`
+ * function returns false.
+ */
 bool Storage::OwnerTransfer(string reciever,int amount)
 {
     if (amount < 0)
@@ -233,6 +300,18 @@ bool Storage::OwnerTransfer(string reciever,int amount)
     
     }
 }
+/**
+ * The function `BankTransfer` transfers a specified amount of money from one account to another if the
+ * receiver account exists.
+ * 
+ * @param receivername The `receivername` parameter in the `BankTransfer` function represents the name
+ * of the account holder to whom the bank transfer is being made.
+ * @param amount The `amount` parameter in the `BankTransfer` function represents the amount of money
+ * that is being transferred from one account to another.
+ * 
+ * @return The `BankTransfer` function returns a boolean value (`true` or `false`) based on the success
+ * of the bank transfer operation.
+ */
 bool Storage::BankTransfer(string receivername,int amount)
 {
     if (accountExists(receivername))
@@ -271,6 +350,19 @@ string Storage::getPass()
 };
 
 //return true if username and password is registered (for login parts)
+/**
+ * The function `verifyPassword` in C++ reads from a file to check if a given username and password
+ * match any stored credentials.
+ * 
+ * @param username The `username` parameter is a string that represents the username input provided by
+ * a user trying to log in.
+ * @param password The `verifyPassword` function in the provided code snippet reads from a file named
+ * "accounts.txt" to check if a given `username` and `password` match any entries in the file. If a
+ * matching entry is found, it sets the `acc` object's `username` and `password
+ * 
+ * @return The `verifyPassword` function returns a boolean value - `true` if the provided `username`
+ * and `password` match an entry in the "accounts.txt" file, and `false` otherwise.
+ */
 bool Storage::verifyPassword(string username, string password)
         {
             file.open("accounts.txt", ios::in);
@@ -294,6 +386,20 @@ bool Storage::verifyPassword(string username, string password)
         }
 
 //a method that return true if verifyPassword also return true and return false if not (use for login loop)
+/**
+ * The function `accountCheck` in C++ checks if the username and password are valid and returns true if
+ * they are, otherwise it outputs an error message and returns false.
+ * 
+ * @param uname The `uname` parameter is a string representing the username input provided by the user
+ * for account verification.
+ * @param upass The `upass` parameter in the `accountCheck` function represents the password input
+ * provided by the user for a specific username (`uname`). This password is then verified using the
+ * `verifyPassword` function to determine if it matches the stored password for the given username.
+ * 
+ * @return The `accountCheck` function returns a boolean value. If the `verifyPassword` function
+ * returns true for the given username and password, then `true` is returned. Otherwise, if the
+ * password verification fails, it outputs an error message and returns `false`.
+ */
 bool Storage::accountCheck(string uname, string upass)
         {
             if (verifyPassword(uname, upass))
@@ -308,6 +414,17 @@ bool Storage::accountCheck(string uname, string upass)
         }
 
 //registering part
+/**
+ * The function `registerAccount` registers a new account with a username, password, and initial
+ * balance of 0 in a file and returns true upon successful registration.
+ * 
+ * @param username The `username` parameter is a string that represents the username of the account
+ * being registered.
+ * @param pass The `pass` parameter in the `registerAccount` function represents the password
+ * associated with the `username` for registering an account.
+ * 
+ * @return The `registerAccount` function is returning a boolean value `true`.
+ */
 bool Storage::registerAccount(string username, string pass)
         {
             file.open("accounts.txt",ios::out|ios::app);
@@ -321,6 +438,17 @@ bool Storage::registerAccount(string username, string pass)
         }
 
 //return true/false based on account existed or not (use for register loop) and use for returning
+/**
+ * The function `accountExists` checks if a given username exists in a file named "accounts.txt" along
+ * with corresponding password and amount.
+ * 
+ * @param username The `username` parameter is a string that represents the username of the account
+ * that we are checking for existence in the `accounts.txt` file.
+ * 
+ * @return This function returns a boolean value indicating whether an account with the specified
+ * username exists in the "accounts.txt" file. If the username is found in the file, the function
+ * returns true. Otherwise, it returns false.
+ */
 bool Storage::accountExists(string username)
     {
         file.open("accounts.txt", ios::in);
@@ -339,29 +467,10 @@ bool Storage::accountExists(string username)
         file.close();
         return false;
     }
-/*void Storage::RegisterValidation()
-{
-    string username;
-    string password;
-    cout << "Enter username: ";
-    cin >> username;
-    cout << "Enter password: ";
-    cin >> password;
 
-    if (accountExists(username))
-    {
-        cout << "Account with this username already exists. Please choose another username." << endl;
-    }
-
-    bool success = registerAccount(username, password);
-    
-}*/
 class Debt:virtual public Storage
 
 {
-    protected:
-    
-
     public:
     bool checkMoneyUser(int);
     bool checkMoneyBank();
@@ -376,6 +485,15 @@ class Debt:virtual public Storage
     void repayMoney();
 };
 
+/**
+ * The function `checkloan` reads the balance amount associated with a specific username from a file
+ * named "Debt.txt".
+ * 
+ * @return The `checkloan` function is returning the amount of debt associated with the current user's
+ * account. If the username in the file matches the username of the current account, then the function
+ * returns the amount of debt for that user. If no match is found, the function does not return
+ * anything explicitly (which is not ideal practice).
+ */
 int Debt::checkloan()
 {
     string fileName = "Debt.txt";
@@ -394,6 +512,18 @@ int Debt::checkloan()
     }
     
 }
+/**
+ * The function `checkMoneyUser` reads user balances from a file and checks if the user has enough
+ * balance to cover a given debt.
+ * 
+ * @param debt The `debt` parameter in the `checkMoneyUser` function represents the amount of money
+ * that the user wants to borrow or use. The function reads user account information from a file and
+ * checks if the user's balance is sufficient to cover the debt. If the user's balance is greater than
+ * or
+ * 
+ * @return The function `checkMoneyUser` returns a boolean value - `true` if the user's balance is
+ * greater than or equal to the debt amount, and `false` otherwise.
+ */
 bool Debt::checkMoneyUser(int debt)
 {
         string fileName = "accounts.txt";
@@ -421,6 +551,15 @@ bool Debt::checkMoneyUser(int debt)
         return false;
     }
 }
+/**
+ * The function `checkMoneyBank` reads account balances from a file and checks if the user's balance is
+ * greater than zero, returning true if so, and applying fees and returning false if the balance is
+ * zero.
+ * 
+ * @return This function returns a boolean value. If the amount in the `bdebt` object is greater than
+ * 0, it returns true. Otherwise, it prints a message indicating that the bank has run out of money,
+ * includes a fee in the transaction, and returns false.
+ */
 bool Debt::checkMoneyBank()
 {
         string fileName = "accounts.txt";
@@ -455,6 +594,10 @@ bool Debt::checkMoneyBank()
 }
 
 //display choice and called selection part
+/**
+ * The function `customerChoice` displays a menu of options for the user to choose from and then calls
+ * the `debtChoice` function.
+ */
 void Debt::customerChoice()
     {
         const char* selective_choice[] = {"1.Loan money", "2.Repay money", "3.Exit"};
@@ -467,6 +610,10 @@ void Debt::customerChoice()
 
     }
 //selection part
+/**
+ * The function `debtChoice` allows the user to select options related to managing debt, such as taking
+ * a loan or repaying money.
+ */
 void Debt::debtChoice()
     {
         int number_selected;
@@ -490,6 +637,10 @@ void Debt::debtChoice()
     
     }
 
+/**
+ * The function `loanMoney` processes a loan request by updating the debt amount for a specific user
+ * and handling the transfer of funds from a bank account if sufficient balance is available.
+ */
 void Debt::loanMoney() {
     double amount;
     
@@ -551,6 +702,10 @@ void Debt::loanMoney() {
     customerChoice();
 }
 
+/**
+ * The function `repayMoney` allows a user to repay a specified amount of debt, updating the debt
+ * records accordingly and handling various scenarios such as insufficient funds.
+ */
 void Debt::repayMoney() {
     double amount;
     cout << "Total including fees " << checkloan()+(checkloan()*(this->bs.fee/100)) << " successful." << endl;
@@ -605,58 +760,6 @@ void Debt::repayMoney() {
     customerChoice();
 }
 
-/*
-void Debt::repayMoney() {
-    double amount;
-    cout << "fees:" << bs.fee/100 << endl;
-    cout << "Enter amount to repay: ";
-    cin >> amount;
-    string line;
-    string filename = "Debt.txt";
-    ifstream infile(filename);
-    ofstream outfile("Debt_copy.txt");
-    bool found = false;
-
-    while (getline(infile, line)) {
-        string username;
-        double debt;
-        istringstream iss(line);
-        if (iss >> username >> debt) {
-            
-            if (username == acc.username && debt <= amount) {
-                debt -= amount*(bs.fee/100);
-                outfile << username << " " << debt << endl;
-                cout << "Repayment of " << amount+amount*(bs.fee/100) << " successful." << endl;
-                if(checkMoneyUser(amount+amount*(bs.fee/100)))
-                {
-                    BankTransfer(bdebt.name,amount+amount*(bs.fee/100));
-                    outfile << acc.username << " " << debt << endl;
-                }
-                else
-                {
-                    cout << "You not have enough money to pay debt."<<endl;;
-                    debtChoice();
-                }
-                found = true;
-            } else {
-                outfile << line << endl;
-            }
-        }
-    }
-    infile.close();
-    outfile.close();
-    remove(filename.c_str());
-    rename("Debt_copy.txt", filename.c_str());
-
-    if (!found) {
-        cout << "Error: User does not have enough debt to repay or user not found." << endl;
-    }
-
-    customerChoice();
-}
-*/
-
-
 
 class Bank:virtual public Storage,public Debt
 {
@@ -692,6 +795,11 @@ class Bank:virtual public Storage,public Debt
 };
 
 //select choice
+/**
+ * The function `selectChoice` in a C++ Bank class allows the user to choose various banking operations
+ * like withdraw, deposit, check balance, transfer, change account, or delete account based on the
+ * selected number.
+ */
 void Bank::selectChoice()
         {
             int number_selected;
@@ -748,6 +856,9 @@ void Bank::selectChoice()
         
         }
 //choice display and called selectChoice
+/**
+ * The function Bank::viewChoice displays a menu of banking options for the user to choose from.
+ */
 void Bank::viewChoice()
         {
             const char* selective_choice[] = {"1.Withdraw","2.Deposit","3.Balance","4.Loan","5.Transfer","6.ChangeAccount","7.Exit"};
@@ -763,6 +874,10 @@ void Bank::viewChoice()
         }
 
 //display Balance
+/**
+ * The `checkBalance` function reads account information from a file and displays the current balance
+ * for a specific user.
+ */
 void Bank::checkBalance()
         {
             string fileName = "accounts.txt";
@@ -787,6 +902,10 @@ void Bank::checkBalance()
         }
 
 //create account if username is not existed
+/**
+ * The function `accountCreate` in C++ prompts the user to enter a username and password, checks if the
+ * account already exists, and either prompts for a new username or registers the account and logs in.
+ */
 void Bank::accountCreate()
         {
             string username;
@@ -807,11 +926,23 @@ void Bank::accountCreate()
                 autoLogin(username,password);
             }
         }
+/**
+ * The function `changeAccount` in the Bank class calls the `accountValidation` function.
+ */
 void Bank::changeAccount()
 {
     accountValidation();
 }
 //auto login
+/**
+ * The function `autoLogin` in C++ checks the account credentials and either displays the main menu or
+ * prompts for account validation.
+ * 
+ * @param uname The `uname` parameter in the `autoLogin` function is a string that represents the
+ * username entered by the user for logging into their bank account.
+ * @param upass The parameter `upass` in the `autoLogin` function is a string that represents the
+ * password entered by the user for logging into their bank account.
+ */
 void Bank::autoLogin(string uname,string upass)
 {
     if (accountCheck(uname,upass))
@@ -824,6 +955,10 @@ void Bank::autoLogin(string uname,string upass)
     }
 }
 //method for select a register or login options
+/**
+ * The function `accountValidation` in C++ prompts the user to either register or login, then calls the
+ * appropriate function based on the user's choice.
+ */
 void Bank::accountValidation()
     {
             int rol;
@@ -860,6 +995,10 @@ void Bank::accountValidation()
         }
 
 //write file deposit
+/**
+ * The function `deposit` in the Bank class allows a user to deposit a specified amount into their
+ * account and updates the balance accordingly in a file.
+ */
 void Bank::deposit() 
 {
 
@@ -900,6 +1039,10 @@ void Bank::deposit()
     
     
 
+/**
+ * The function `withdraw` in C++ allows a user to withdraw a specified amount from their bank account
+ * and updates the balance accordingly in a file.
+ */
 //write file withdraw
 void Bank::withdraw() {
     double amount;
@@ -946,6 +1089,11 @@ void Bank::withdraw() {
     
 }
 
+/**
+ * The main function creates a Bank object and calls the accountValidation method on it.
+ * 
+ * @return The `main` function is returning an integer value of 0.
+ */
 int main()
 {
     //make Bank object

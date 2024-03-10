@@ -13,3 +13,11 @@ third Bank 500000 10115183
 Bank jojo 50 18479950
 Bank jojo 150 18479800
 jojo Bank 150 150
+third jojo 10115183 0
+Bank third 999999 17479951
+third Bank 9999 990000
+third Bank 989999 1
+third Bank 1 0
+Bank jojo 5000000 13479950
+jojo Bank 50000 15065333
+jojo Bank 4950000 10115333
