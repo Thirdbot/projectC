@@ -26,10 +26,6 @@ class Storage
         string password = "1234";
         int amount = 20000000;
     }bdebt;
-    struct bankessential
-    {
-        int fee=0;
-    }bs;
     
 
     //file
@@ -153,12 +149,12 @@ bool Storage::Bankwithdraw(string Sender,int amount)
     {
         if (username == Sender)
         {
-            if(balance >= amount+amount*(bs.fee/100))
+            if(balance >= amount)
             {
-                balance = balance  - amount+amount*(bs.fee/100);
+                balance = balance  - amount;
                 cout << "Transfer successful." << Sender << " new balance: " << balance << endl;
                 this->acc.balance = balance;
-                this->bdebt.amount += amount+amount*(bs.fee/100);
+                this->bdebt.amount += amount;
             }
             else
             {
@@ -586,9 +582,6 @@ bool Debt::checkMoneyBank()
         {
 
         cout << "Bank run out of money" << endl;
-        cout << "Start include fees in transaction"<<endl;
-        bs.fee = 100;
-        cout << "Fees:"<<bs.fee <<"%"<<endl;
         return false;
     }
 }
@@ -670,7 +663,6 @@ void Debt::loanMoney() {
                     BankTransfer(acc.username,debt);
                     cout << "Loan request processed. Thank you!" << endl;
                     found = true;
-                    this->bs.fee += 10;
                     bdebt.amount+=debt;
                 }
                 else
@@ -679,7 +671,7 @@ void Debt::loanMoney() {
                     cout << "Couldnt let user loan." << endl;
                     found=false;
                 }
-                outfile << acc.username << " " << debt+(debt*(this->bs.fee/100));
+                outfile << acc.username << " " << debt;
             }
             
              else {
@@ -708,7 +700,7 @@ void Debt::loanMoney() {
  */
 void Debt::repayMoney() {
     double amount;
-    cout << "Total including fees " << checkloan()+(checkloan()*(this->bs.fee/100)) << " successful." << endl;
+    cout << "Total " << checkloan() << " successful." << endl;
     cout << "Enter amount to repay: ";
     cin >> amount;
     string line;
@@ -731,13 +723,11 @@ void Debt::repayMoney() {
                 {
                     Bankdeposit(bdebt.name,amount);
                     createBankFile(acc.username,bdebt.name,amount,acc.balance);
-                    this->bs.fee = 0;
                 }
                 else
                 {
                     cout << "You not have enough money to pay debt.";
                     cout << "Want to pay debt in minimum(include further fees)?" << endl;
-                    this->bs.fee += 1;
                     repayMoney();
 
                     customerChoice();

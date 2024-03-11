@@ -8,6 +8,8 @@
         "limits": "cpp",
         "iosfwd": "cpp",
         "cstring": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "xlocmes": "cpp",
+        "*.tcc": "cpp"
     }
 }
