@@ -1,0 +1,2 @@
+Bank third 10000 90000
+third Bank 5000 5100

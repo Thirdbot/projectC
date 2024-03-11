@@ -700,7 +700,7 @@ void Debt::loanMoney() {
  */
 void Debt::repayMoney() {
     double amount;
-    cout << "Total " << checkloan() << " successful." << endl;
+    cout << "Total " << checkloan() << endl;
     cout << "Enter amount to repay: ";
     cin >> amount;
     string line;
