@@ -865,7 +865,7 @@ void Bank::viewChoice()
             cout<<"=================="<<endl;
             cout <<"Username: "<< getName() << endl;
             cout<<"=================="<<endl;
-            for (int i=0;i<size(selective_choice);i++)
+            for (int i=0;i<sizeof(selective_choice) / sizeof(selective_choice[0]);i++)
             {
                 cout <<selective_choice[i] << endl;
             }
