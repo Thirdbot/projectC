@@ -500,7 +500,7 @@ int Debt::checkloan()
     int amount;
     while (file >> file_username >> amount)
     {
-        if (file_username == this->acc.username)
+        if (file_username == acc.username)
         {
             file.close();
             return amount;
@@ -538,7 +538,7 @@ bool Debt::checkMoneyUser(int debt)
             }
 
         file.close();
-        if(acc.balance > 0 && acc.balance >=debt)
+        if(acc.balance > 0 && acc.balance >= debt)
         {
             return true;
         }
@@ -716,7 +716,7 @@ void Debt::repayMoney() {
         if (iss >> username >> debt) {
             if (username == acc.username) {
                 
-                outfile << username << " " << (debt-amount <0?0:debt-amount) << endl;
+                outfile << username << " " << (debt-amount <= 0?0:debt-amount) << endl;
                 cout << "Repayment of " << amount << " successful." << endl;
 
                 if(checkMoneyUser(amount))

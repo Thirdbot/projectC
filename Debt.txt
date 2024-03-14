@@ -1,1 +1,1 @@
-third 5000
+third 0
