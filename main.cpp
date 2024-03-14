@@ -24,7 +24,7 @@ class Storage
     {
         string name = "Bank";
         string password = "1234";
-        int amount = 0;
+        int amount = 10000000;
     }bdebt;
     
 
@@ -38,7 +38,7 @@ class Storage
     Storage()
     {
         cout << "Using Vault System." << endl;
-        //BankTransfer(bdebt.name,bdebt.amount);
+        BankTransfer(bdebt.name,bdebt.amount);
     }
 
     //update file by amount of money

@@ -1,0 +1,2 @@
+C:/Users/astro/Desktop/projectC/projectCPP/build/CMakeFiles/edit_cache.dir
+C:/Users/astro/Desktop/projectC/projectCPP/build/CMakeFiles/rebuild_cache.dir
