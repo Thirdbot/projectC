@@ -31,3 +31,4 @@ Bank Bank 20000000 79999000
 third Bank 1000 100
 third Bank 0 100
 third Bank 3 97
+Bank third 6 100000000

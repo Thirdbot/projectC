@@ -24,7 +24,7 @@ class Storage
     {
         string name = "Bank";
         string password = "1234";
-        int amount = 20000000;
+        int amount = 0;
     }bdebt;
     
 
