@@ -38,7 +38,8 @@ class Storage
     Storage()
     {
         cout << "Using Vault System." << endl;
-        BankTransfer(bdebt.name,bdebt.amount);
+        Bankdeposit(bdebt.name,bdebt.amount);
+        createBankFile("VAULT",bdebt.name,bdebt.amount,bdebt.amount);
     }
 
     //update file by amount of money
@@ -500,7 +501,7 @@ class Debt:virtual public Storage
  * anything explicitly (which is not ideal practice).
  */
 int Debt::checkloan()
-{
+    {
     string fileName = "Debt.txt";
     //need personal balance checking
     file.open(fileName, ios::in);
@@ -515,8 +516,8 @@ int Debt::checkloan()
             return amount;
         }
     }
-    
-}
+    return 0;
+    }
 /**
  * The function `checkMoneyUser` reads user balances from a file and checks if the user has enough
  * balance to cover a given debt.

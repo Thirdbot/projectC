@@ -1,2 +1,2 @@
-third 0
-Jojo 0
+third 495000
+Jojo 499600
