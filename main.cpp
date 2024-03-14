@@ -34,7 +34,13 @@ class Storage
         fstream file;
 
     public:
-    Storage(){cout << "Using Vault System." << endl;}
+    //constructor overload
+    Storage()
+    {
+        cout << "Using Vault System." << endl;
+        //BankTransfer(bdebt.name,bdebt.amount);
+    }
+
     //update file by amount of money
     bool Bankdeposit(string,int);
     //update file by amount of money
