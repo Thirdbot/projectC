@@ -671,7 +671,7 @@ void Debt::loanMoney() {
                     cout << "Couldnt let user loan." << endl;
                     found=false;
                 }
-                outfile << acc.username << " " << debt;
+                outfile << acc.username << " " << debt << "\n";
             }
             
              else {
@@ -758,6 +758,11 @@ class Bank:virtual public Storage,public Debt
     Bank()
     {
         cout << "Welcome to Bank."<<endl;
+    }
+    // Init Bank
+    void Init()
+    {
+        accountValidation();
     }
     //create account and use accountExist method
     void accountCreate();
@@ -1089,6 +1094,6 @@ int main()
     //make Bank object
     Bank bank;
     //called registeration
-    bank.accountValidation();
+    bank.Init();
     return 0;
 }
