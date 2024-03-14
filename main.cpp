@@ -34,6 +34,7 @@ class Storage
         fstream file;
 
     public:
+    Storage(){cout << "Using Vault System." << endl;}
     //update file by amount of money
     bool Bankdeposit(string,int);
     //update file by amount of money
@@ -59,6 +60,8 @@ class Storage
     string getName();
     string getPass();
     int getAmount();
+
+    ~Storage(){cout << "End Vault System." << endl;}
 };
 
 //giveaway

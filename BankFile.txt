@@ -26,3 +26,4 @@ Bank Jojo 1000 8000
 Jojo Bank 1000 10000
 third Bank 50 10950
 third Bank 5000 5950
+Bank third 1000 99999000
