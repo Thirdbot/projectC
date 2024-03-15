@@ -20,6 +20,7 @@ class Storage
         string password;
         int balance;
     }acc;
+
     struct bankDebt
     {
         string name = "Bank";
@@ -27,7 +28,6 @@ class Storage
         int amount = 10000000;
     }bdebt;
     
-
     //file
     protected:
         fstream bankfile;
