@@ -25,7 +25,7 @@ class Storage
     {
         string name = "Bank";
         string password = "1234";
-        double amount = 10000000.0;
+        double amount = 100000.0;
     }bdebt;
     
     //file
@@ -435,7 +435,7 @@ bool Storage::registerAccount(string username, string pass)
         {
             file.open("accounts.txt",ios::out|ios::app);
 
-            file << username << " " << pass << " " << 0 << endl;
+            file << username << " " << pass << " " << double(0) << endl;
             file.close();
 
             cout << "Account registered successfully!" << endl;
@@ -693,7 +693,7 @@ void Debt::loanMoney() {
 
     // If the user does not exist in the debt file, add a new entry
     if (!found) {
-        outfile << acc.username << " " << 0 << endl;;
+        outfile << acc.username << " " << double(0) << endl;;
         cout << "Loan request failed." << endl;
     }
 
@@ -726,7 +726,7 @@ void Debt::repayMoney() {
         if (iss >> username >> debt) {
             if (username == acc.username) {
                 
-                outfile << username << " " << (debt-amount <= 0?0:debt-amount) << endl;
+                outfile << username << " " << (debt-amount <= 0?double(0):debt-amount) << endl;
                 cout << "Repayment of " << amount << " successful." << endl;
 
                 if(checkMoneyUser(amount))
