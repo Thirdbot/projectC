@@ -18,14 +18,14 @@ class Storage
     {
         string username;
         string password;
-        int balance;
+        double balance;
     }acc;
 
     struct bankDebt
     {
         string name = "Bank";
         string password = "1234";
-        int amount = 10000000;
+        double amount = 10000000.0;
     }bdebt;
     
     //file
@@ -43,21 +43,21 @@ class Storage
     }
 
     //update file by amount of money
-    bool Bankdeposit(string,int);
+    bool Bankdeposit(string,double);
     //update file by amount of money
-    bool Bankwithdraw(string,int);
+    bool Bankwithdraw(string,double);
     //transfer service using deposit and withdraw
     bool Transfer();
     //seperate bank file
-    void createBankFile(string,string,int,int);
+    void createBankFile(string,string,double,double);
     //loop register/login page
     bool accountCheck(string,string);
     //return either true or false based on username password
     bool verifyPassword(string,string);
     //registering an account process 
     bool registerAccount(string,string);
-    bool BankTransfer(string,int);
-    bool OwnerTransfer(string,int);
+    bool BankTransfer(string,double);
+    bool OwnerTransfer(string,double);
     //void RegisterValidation();
 
     // check if username existed
@@ -66,7 +66,7 @@ class Storage
     //public method for getting name and password and balance for validation
     string getName();
     string getPass();
-    int getAmount();
+    double getAmount();
 
     ~Storage(){cout << "End Vault System." << endl;}
 };
@@ -87,7 +87,7 @@ class Storage
  * successful, and `false` if the amount is less than 0 or if the withdrawal during the deposit process
  * fails.
  */
-bool Storage::Bankdeposit(string reciever,int amount)
+bool Storage::Bankdeposit(string reciever,double amount)
 {
     if (amount < 0)
     {
@@ -96,7 +96,7 @@ bool Storage::Bankdeposit(string reciever,int amount)
     else
     {
     string username, password;
-    int balance;
+    double balance;
     string fileName = "accounts.txt";
 
     //iterator for reading balance at username
@@ -138,7 +138,7 @@ bool Storage::Bankdeposit(string reciever,int amount)
  * returns `true`. If the withdrawal fails due to insufficient funds or other reasons, it returns
  * `false`.
  */
-bool Storage::Bankwithdraw(string Sender,int amount)
+bool Storage::Bankwithdraw(string Sender,double amount)
 {
     //this->acc.username
     if (amount < 0)
@@ -148,7 +148,7 @@ bool Storage::Bankwithdraw(string Sender,int amount)
     else
     {
     string username, password;
-    int balance;
+    double balance;
     string fileName = "accounts.txt";
     //read file temporary
     ifstream wit(fileName);
@@ -208,10 +208,10 @@ bool Storage::Bankwithdraw(string Sender,int amount)
  * the transaction, the total amount being transferred, or some other total value related to the
  * transaction.
  */
-void Storage::createBankFile(string uname1,string uname2,int size,int total)
+void Storage::createBankFile(string uname1,string uname2,double size,double total)
 {
     string usender,ureciever;
-    int balance,amount;
+    double balance,amount;
     string fileName = "BankFile.txt";
     cout << "Bankfile Created" << endl;
     //read file temporary
@@ -231,7 +231,7 @@ void Storage::createBankFile(string uname1,string uname2,int size,int total)
 bool Storage::Transfer()
 {
     string reciever;
-    int amount;
+    double amount;
     cout << "Transfer Money" << endl;
     cout << "Enter reciever name: ";
     cin >> reciever;
@@ -269,7 +269,7 @@ bool Storage::Transfer()
  * successful, and `false` if the transfer fails due to a negative amount or if the `Bankwithdraw`
  * function returns false.
  */
-bool Storage::OwnerTransfer(string reciever,int amount)
+bool Storage::OwnerTransfer(string reciever,double amount)
 {
     if (amount < 0)
     {
@@ -278,7 +278,7 @@ bool Storage::OwnerTransfer(string reciever,int amount)
     else
     {
     string username, password;
-    int balance;
+    double balance;
     string fileName = "accounts.txt";
 
     //iterator for reading balance at username
@@ -318,7 +318,7 @@ bool Storage::OwnerTransfer(string reciever,int amount)
  * @return The `BankTransfer` function returns a boolean value (`true` or `false`) based on the success
  * of the bank transfer operation.
  */
-bool Storage::BankTransfer(string receivername,int amount)
+bool Storage::BankTransfer(string receivername,double amount)
 {
     if (accountExists(receivername))
     {
@@ -340,7 +340,7 @@ bool Storage::BankTransfer(string receivername,int amount)
    
 }
 //return protected structure contains balance
-int Storage::getAmount()
+double Storage::getAmount()
 {
     return acc.balance;
 };
@@ -375,7 +375,7 @@ bool Storage::verifyPassword(string username, string password)
 
             string file_username;
             string file_password;
-            int amount;
+            double amount;
             while (file >> file_username >> file_password >> amount)
             {
                 if (file_username == username && file_password == password)
@@ -461,7 +461,7 @@ bool Storage::accountExists(string username)
 
         string file_username;
         string password;
-        int amount;
+        double amount;
         while (file >> file_username >> password >> amount)
         {
             if (file_username == username)
@@ -478,13 +478,13 @@ class Debt:virtual public Storage
 
 {
     public:
-    bool checkMoneyUser(int);
+    bool checkMoneyUser(double);
     bool checkMoneyBank();
     //choice display 
     void customerChoice();
     //choice selection
     void debtChoice();
-    int checkloan();
+    double checkloan();
     //method for loan money
     void loanMoney();
     //method for repay money
@@ -500,14 +500,14 @@ class Debt:virtual public Storage
  * returns the amount of debt for that user. If no match is found, the function does not return
  * anything explicitly (which is not ideal practice).
  */
-int Debt::checkloan()
+double Debt::checkloan()
     {
     string fileName = "Debt.txt";
     //need personal balance checking
     file.open(fileName, ios::in);
     //iterator for reading balance at username
     string file_username;
-    int amount;
+    double amount;
     while (file >> file_username >> amount)
     {
         if (file_username == acc.username)
@@ -530,7 +530,7 @@ int Debt::checkloan()
  * @return The function `checkMoneyUser` returns a boolean value - `true` if the user's balance is
  * greater than or equal to the debt amount, and `false` otherwise.
  */
-bool Debt::checkMoneyUser(int debt)
+bool Debt::checkMoneyUser(double debt)
 {
         string fileName = "accounts.txt";
         //need personal balance checking
@@ -538,7 +538,7 @@ bool Debt::checkMoneyUser(int debt)
         //iterator for reading balance at username
         string file_username;
         string file_password;
-        int amount;
+        double amount;
         while (file >> file_username >> file_password >> amount)
         {
             if (file_username == acc.username && file_password == acc.password)
@@ -574,7 +574,7 @@ bool Debt::checkMoneyBank()
         //iterator for reading balance at username
         string file_username;
         string file_password;
-        int amount;
+        double amount;
         while (file >> file_username >> file_password >> amount)
         {
             if (file_username == bdebt.name && file_password == bdebt.password)
@@ -891,7 +891,7 @@ void Bank::checkBalance()
             //iterator for reading balance at username
             string file_username;
             string file_password;
-            int amount;
+            double amount;
 
             while (file >> file_username >> file_password >> amount)
             {
@@ -1017,7 +1017,7 @@ void Bank::deposit()
     else
     {
     string username, password;
-    int balance;
+    double balance;
     string fileName = "accounts.txt";
     //read file temporary
     ifstream file(fileName);
@@ -1061,7 +1061,7 @@ void Bank::withdraw() {
     {
     string fileName = "accounts.txt";
     string username, password;
-    int balance;
+    double balance;
 
     //read file temporary
     ifstream file(fileName);
